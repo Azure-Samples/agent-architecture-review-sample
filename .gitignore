@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+.venv*/
+venv/
+
+# Environment files (secrets)
+.env
+.env.local
+
+# Local output & dev artefacts
+output/
+
+# Node / Frontend
+node_modules/
+frontend/dist/
+
+# Vite / Foundry caches
+.vite/
+.foundry/
+
+# IDE / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db

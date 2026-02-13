@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv*/
+venv/
+*.egg-info/
+
+# Environment files (secrets)
+.env
+.env.local
+
+# Local output & dev artefacts
+output/
+
+# Node (frontend has its own install in Dockerfile.web)
+frontend/node_modules/
+frontend/dist/
+
+# IDE / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Docs / CI
+.git/
+.github/

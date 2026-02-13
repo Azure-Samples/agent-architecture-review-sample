@@ -1,0 +1,133 @@
+# E-Commerce Platform Architecture
+# ==================================
+# Sample architecture file for architecture review agent testing.
+
+components:
+  - name: API Gateway
+    type: gateway
+    technology: Kong / NGINX
+    replicas: 3
+    description: External traffic entry point with rate limiting and auth
+
+  - name: Auth Service
+    type: service
+    technology: Node.js + JWT
+    replicas: 2
+    description: Handles authentication and token management
+
+  - name: Product Catalog
+    type: service
+    technology: Python FastAPI
+    replicas: 3
+    description: Product CRUD, search, and inventory queries
+
+  - name: Order Service
+    type: service
+    technology: Java Spring Boot
+    replicas: 2
+    description: Order lifecycle management
+
+  - name: Payment Processor
+    type: service
+    technology: Go
+    replicas: 2
+    description: Payment orchestration with Stripe/PayPal
+
+  - name: Notification Service
+    type: service
+    technology: Python Celery
+    replicas: 1
+    description: Email, SMS, and push notifications
+
+  - name: User Database
+    type: database
+    technology: PostgreSQL
+    replicas: 2
+    description: User accounts and profiles (primary-replica)
+
+  - name: Product Database
+    type: database
+    technology: PostgreSQL
+    replicas: 2
+    description: Product catalog data
+
+  - name: Order Database
+    type: database
+    technology: PostgreSQL
+    replicas: 1
+    description: Order and transaction records
+
+  - name: Redis Cache
+    type: cache
+    technology: Redis Cluster
+    replicas: 3
+    description: Session cache, product cache, rate limiting
+
+  - name: Message Queue
+    type: queue
+    technology: RabbitMQ
+    replicas: 2
+    description: Async event bus for order and notification events
+
+  - name: CDN
+    type: cdn
+    technology: CloudFront
+    description: Static assets and product images
+
+connections:
+  - from: CDN
+    to: API Gateway
+    protocol: HTTPS
+
+  - from: API Gateway
+    to: Auth Service
+    protocol: gRPC
+
+  - from: API Gateway
+    to: Product Catalog
+    protocol: REST
+
+  - from: API Gateway
+    to: Order Service
+    protocol: REST
+
+  - from: Auth Service
+    to: User Database
+    protocol: TCP
+
+  - from: Auth Service
+    to: Redis Cache
+    protocol: TCP
+    description: Session tokens
+
+  - from: Product Catalog
+    to: Product Database
+    protocol: TCP
+
+  - from: Product Catalog
+    to: Redis Cache
+    protocol: TCP
+    description: Product caching
+
+  - from: Order Service
+    to: Order Database
+    protocol: TCP
+
+  - from: Order Service
+    to: Payment Processor
+    protocol: gRPC
+
+  - from: Order Service
+    to: Message Queue
+    protocol: AMQP
+    description: Order events
+
+  - from: Message Queue
+    to: Notification Service
+    protocol: AMQP
+    description: Notification triggers
+
+  - from: Payment Processor
+    to: Message Queue
+    protocol: AMQP
+    description: Payment confirmations

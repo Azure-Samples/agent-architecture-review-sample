@@ -1,0 +1,18 @@
+# Microsoft Agent Framework (Hosted Agents)
+azure-ai-agentserver-agentframework==1.0.0b10
+azure-identity>=1.25.0,<2.0.0
+
+# MCP (Excalidraw diagram rendering)
+mcp>=1.26.0,<2.0.0
+httpx>=0.28.0,<1.0.0
+
+# Web API
+fastapi>=0.115.0,<1.0.0
+uvicorn[standard]>=0.34.0,<1.0.0
+python-multipart>=0.0.20,<1.0.0
+
+# Parsing & utilities
+pyyaml>=6.0.2,<7.0.0
+python-dotenv>=1.2.0,<2.0.0
+rich>=14.0.0,<15.0.0
+Pillow>=12.0.0,<13.0.0
