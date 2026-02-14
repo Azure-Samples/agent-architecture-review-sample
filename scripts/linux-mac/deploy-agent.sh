@@ -5,8 +5,8 @@
 # agent container via Azure Developer CLI (azd).
 #
 # Usage:
-#   chmod +x deploy/deploy-agent.sh
-#   ./deploy/deploy-agent.sh \
+#   chmod +x scripts/linux-mac/deploy.sh
+#   bash scripts/linux-mac/deploy.sh --target agent \
 #       --resource-group arch-review-rg \
 #       --project-name arch-review \
 #       --location eastus2

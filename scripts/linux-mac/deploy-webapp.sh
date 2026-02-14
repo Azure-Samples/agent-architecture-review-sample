@@ -6,8 +6,8 @@
 # configures the web app with environment variables from .env.
 #
 # Usage:
-#   chmod +x deploy/deploy-webapp.sh
-#   ./deploy/deploy-webapp.sh \
+#   chmod +x scripts/linux-mac/deploy.sh
+#   bash scripts/linux-mac/deploy.sh --target webapp \
 #       --resource-group arch-review-rg \
 #       --app-name arch-review-web \
 #       --location eastus2

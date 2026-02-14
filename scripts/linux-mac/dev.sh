@@ -4,12 +4,13 @@
 # The Vite dev server proxies /api requests to the backend.
 #
 # Usage:
-#   chmod +x start-dev.sh
-#   ./start-dev.sh
+#   chmod +x scripts/linux-mac/dev.sh
+#   bash scripts/linux-mac/dev.sh
 
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Go up 2 levels: scripts/linux-mac -> scripts -> project root
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../" && pwd)"
 cd "$SCRIPT_DIR"
 
 echo ""
@@ -18,7 +19,7 @@ echo ""
 
 # ── 1. Check prerequisites ──────────────────────────────────────────────────
 if [ ! -f ".venv/bin/activate" ]; then
-    echo "[ERROR] .venv not found. Run ./setup.sh first."
+    echo "[ERROR] .venv not found. Run bash scripts/linux-mac/setup.sh first."
     exit 1
 fi
 

@@ -59,7 +59,7 @@ A traditional full-stack web application: **FastAPI** backend + **React** fronte
 
 **Best for:** Teams that want a **custom UI**, need to embed the API in existing tooling, or prefer full control over infrastructure and scaling.
 
-**Key files:** [api.py](api.py) · [Dockerfile.web](Dockerfile.web) · [frontend/](frontend/) · [deploy/deploy-webapp.ps1](deploy/deploy-webapp.ps1)
+**Key files:** [api.py](api.py) · [Dockerfile.web](Dockerfile.web) · [frontend/](frontend/) · [scripts/windows/deploy.ps1](scripts/windows/deploy.ps1)
 
 ### Option B — Hosted Agent (Azure AI Foundry Agent Service)
 
@@ -74,7 +74,7 @@ A **managed agent** deployed to Azure AI Foundry's Hosted Agent infrastructure. 
 
 **Best for:** Teams that want a **managed, scalable API** with zero infrastructure overhead, or need to publish the agent to **Teams / M365 Copilot** channels.
 
-**Key files:** [main.py](main.py) · [agent.yaml](agent.yaml) · [Dockerfile](Dockerfile) · [deployment.md](deployment.md) · [deploy/deploy-agent.ps1](deploy/deploy-agent.ps1)
+**Key files:** [main.py](main.py) · [agent.yaml](agent.yaml) · [Dockerfile](Dockerfile) · [deployment.md](deployment.md) · [scripts/windows/deploy.ps1](scripts/windows/deploy.ps1)
 
 ### Comparison
 
@@ -90,8 +90,8 @@ A **managed agent** deployed to Azure AI Foundry's Hosted Agent infrastructure. 
 | **Conversations** | Stateless REST (you manage state) | Platform-managed conversation persistence |
 | **Channel publishing** | N/A (custom UI) | Teams, M365 Copilot, Web preview, stable endpoint |
 | **Observability** | Add your own (App Insights, etc.) | Built-in OpenTelemetry + Azure Monitor |
-| **Deploy command** | `.\deploy\deploy-webapp.ps1` | `azd ai agent deploy` or `.\deploy\deploy-agent.ps1` |
-| **Teardown** | `.\deploy\teardown.ps1` | `.\deploy\teardown.ps1` |
+| **Deploy command** | `.\scripts\windows\deploy.ps1 -target webapp` | `azd ai agent deploy` or `.\scripts\windows\deploy.ps1 -target agent` |
+| **Teardown** | `.\scripts\windows\teardown.ps1` | `.\scripts\windows\teardown.ps1` |
 
 > **Tip:** You can run both simultaneously use the Web App for your internal team's browser-based reviews, and the Hosted Agent for API consumers and Teams/Copilot integration.
 
@@ -107,21 +107,26 @@ agent-architecture-review-sample/
 ├── run_local.py         # CLI runner for local testing (no Azure required)
 ├── agent.yaml           # Foundry hosted agent deployment manifest
 ├── requirements.txt     # Python dependencies (pinned versions)
-├── setup.ps1            # One-click setup script (Windows PowerShell)
-├── setup.sh             # One-click setup script (Linux / macOS)
-├── start-dev.ps1        # Start both frontend + backend for local dev (Windows)
-├── start-dev.sh         # Start both frontend + backend for local dev (Linux / macOS)
 ├── Dockerfile           # Container deployment (hosted agent)
 ├── Dockerfile.web       # Container deployment (web app — FastAPI + React)
 ├── deployment.md        # Step-by-step deployment & RBAC guide
 ├── .env.template        # Environment variable template
-├── deploy/              # Azure deployment automation
-│   ├── deploy-webapp.ps1   # Deploy web app to Azure App Service (PowerShell)
-│   ├── deploy-webapp.sh    # Deploy web app to Azure App Service (Bash)
-│   ├── deploy-agent.ps1    # Deploy hosted agent to Azure AI Foundry (PowerShell)
-│   ├── deploy-agent.sh     # Deploy hosted agent to Azure AI Foundry (Bash)
-│   ├── teardown.ps1        # Delete all Azure resources (PowerShell)
-│   └── teardown.sh         # Delete all Azure resources (Bash)
+├── scripts/             # All automation scripts organized by OS
+│   ├── README.md           # Script usage guide
+│   ├── windows/            # PowerShell scripts for Windows
+│   │   ├── setup.ps1       # One-click setup (Windows)
+│   │   ├── dev.ps1         # Start dev servers (Windows)
+│   │   ├── deploy.ps1      # Unified deployment dispatcher
+│   │   ├── deploy-agent.ps1   # Deploy hosted agent to Foundry
+│   │   ├── deploy-webapp.ps1  # Deploy web app to App Service
+│   │   └── teardown.ps1    # Delete all Azure resources
+│   └── linux-mac/          # Bash scripts for Linux/macOS
+│       ├── setup.sh        # One-click setup (Unix)
+│       ├── dev.sh          # Start dev servers (Unix)
+│       ├── deploy.sh       # Unified deployment dispatcher
+│       ├── deploy-agent.sh    # Deploy hosted agent to Foundry
+│       ├── deploy-webapp.sh   # Deploy web app to App Service
+│       └── teardown.sh     # Delete all Azure resources
 ├── frontend/            # React UI (Vite + Excalidraw)
 │   ├── src/
 │   │   ├── App.jsx      # Main app with input, tabs, and results
@@ -159,7 +164,7 @@ git clone <repo-url>
 cd agent-architecture-review-sample
 
 # Run the setup script (creates .venv, installs deps, copies .env.template → .env)
-.\setup.ps1
+.\scripts\windows\setup.ps1
 ```
 
 **Linux / macOS (Bash):**
@@ -170,8 +175,8 @@ git clone <repo-url>
 cd agent-architecture-review-sample
 
 # Run the setup script
-chmod +x setup.sh
-./setup.sh
+chmod +x scripts/linux-mac/setup.sh
+bash scripts/linux-mac/setup.sh
 ```
 
 ### Manual Setup
@@ -278,7 +283,7 @@ The Architecture Review Agent includes a full-stack web interface with an intera
 #### Quick Start (PowerShell)
 
 ```powershell
-.\start-dev.ps1
+.\scripts\windows\dev.ps1
 ```
 
 This starts the FastAPI backend on port **8000** and the Vite dev server on port **5173**.
@@ -311,12 +316,12 @@ Automated deployment scripts handle resource provisioning, container build, and 
 
 **PowerShell:**
 ```powershell
-.\deploy\deploy-webapp.ps1 -ResourceGroup arch-review-rg -AppName arch-review-web
+.\scripts\windows\deploy.ps1 -target webapp -ResourceGroup arch-review-rg -AppName arch-review-web
 ```
 
 **Bash:**
 ```bash
-./deploy/deploy-webapp.sh --resource-group arch-review-rg --app-name arch-review-web
+bash scripts/linux-mac/deploy.sh --target webapp --resource-group arch-review-rg --app-name arch-review-web
 ```
 
 The scripts create an Azure Container Registry, build the image via ACR Tasks,
@@ -325,7 +330,7 @@ app settings from your `.env` file.
 
 To tear down all resources:
 ```bash
-./deploy/teardown.sh --resource-group arch-review-rg
+bash scripts/linux-mac/teardown.sh --resource-group arch-review-rg
 ```
 
 #### API Endpoints
@@ -373,12 +378,12 @@ The [`agent.yaml`](agent.yaml) manifest defines the hosted agent configuration (
 
 **PowerShell:**
 ```powershell
-.\deploy\deploy-agent.ps1 -ResourceGroup arch-review-rg -ProjectName arch-review
+.\scripts\windows\deploy.ps1 -target agent -ResourceGroup arch-review-rg -ProjectName arch-review
 ```
 
 **Bash:**
 ```bash
-./deploy/deploy-agent.sh --resource-group arch-review-rg --project-name arch-review
+bash scripts/linux-mac/deploy.sh --target agent --resource-group arch-review-rg --project-name arch-review
 ```
 
 **Manual Deployment (azd):**

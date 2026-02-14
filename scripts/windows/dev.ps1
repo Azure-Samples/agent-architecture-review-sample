@@ -7,13 +7,14 @@
     The Vite dev server proxies /api requests to the backend.
 
 .EXAMPLE
-    .\start-dev.ps1
+    .\scripts\windows\dev.ps1
 #>
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-$ProjectRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+# Go up 2 levels: scripts/windows -> scripts -> project root
+$ProjectRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 
 Write-Host ""
 Write-Host "=== Architecture Review Agent Dev Server ===" -ForegroundColor Cyan
@@ -22,7 +23,7 @@ Write-Host ""
 # ── 1. Check prerequisites ──────────────────────────────────────────────────
 $venvActivate = Join-Path $ProjectRoot ".venv\Scripts\Activate.ps1"
 if (-not (Test-Path $venvActivate)) {
-    Write-Host "[ERROR] .venv not found. Run .\setup.ps1 first." -ForegroundColor Red
+    Write-Host "[ERROR] .venv not found. Run .\scripts\windows\setup.ps1 first." -ForegroundColor Red
     exit 1
 }
 

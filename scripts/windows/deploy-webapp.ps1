@@ -24,7 +24,7 @@
     App Service Plan SKU (default: B1).
 
 .EXAMPLE
-    .\deploy\deploy-webapp.ps1 -ResourceGroup arch-review-rg -AppName arch-review-web
+    .\scripts\windows\deploy.ps1 -target webapp -ResourceGroup arch-review-rg -AppName arch-review-web
 #>
 
 [CmdletBinding()]

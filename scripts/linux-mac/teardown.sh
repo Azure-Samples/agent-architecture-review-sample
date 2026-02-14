@@ -5,8 +5,8 @@
 # the deployment scripts.
 #
 # Usage:
-#   ./deploy/teardown.sh --resource-group arch-review-rg
-#   ./deploy/teardown.sh --resource-group arch-review-rg --force
+#   bash scripts/linux-mac/teardown.sh --resource-group arch-review-rg
+#   bash scripts/linux-mac/teardown.sh --resource-group arch-review-rg --force
 
 set -euo pipefail
 

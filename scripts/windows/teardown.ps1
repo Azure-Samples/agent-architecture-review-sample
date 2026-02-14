@@ -13,8 +13,8 @@
     Skip confirmation prompt.
 
 .EXAMPLE
-    .\deploy\teardown.ps1 -ResourceGroup arch-review-rg
-    .\deploy\teardown.ps1 -ResourceGroup arch-review-rg -Force
+    .\scripts\windows\teardown.ps1 -ResourceGroup arch-review-rg
+    .\scripts\windows\teardown.ps1 -ResourceGroup arch-review-rg -Force
 #>
 
 [CmdletBinding()]

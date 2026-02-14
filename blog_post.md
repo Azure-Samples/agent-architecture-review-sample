@@ -129,7 +129,7 @@ You deploy it as a Docker container to **Azure App Service** — you own the API
 
 Deploy with one command:
 ```powershell
-.\deploy\deploy-webapp.ps1 -ResourceGroup arch-review-rg -AppName arch-review-web
+.\scripts\windows\deploy.ps1 -target webapp -ResourceGroup arch-review-rg -AppName arch-review-web
 ```
 
 ### Option B — Hosted Agent (Azure AI Foundry Agent Service)
@@ -180,7 +180,7 @@ Azure handles everything:
 
 Deploy with one command:
 ```powershell
-.\deploy\deploy-agent.ps1 -ResourceGroup arch-review-rg -ProjectName arch-review
+.\scripts\windows\deploy.ps1 -target agent -ResourceGroup arch-review-rg -ProjectName arch-review
 ```
 
 ### Side-by-Side Comparison
@@ -205,13 +205,13 @@ We built automated deployment scripts that handle the full lifecycle for both op
 
 ```powershell
 # Option A: Deploy the web app to Azure App Service
-.\deploy\deploy-webapp.ps1 -ResourceGroup arch-review-rg -AppName arch-review-web
+.\scripts\windows\deploy.ps1 -target webapp -ResourceGroup arch-review-rg -AppName arch-review-web
 
 # Option B: Deploy the hosted agent to Azure AI Foundry
-.\deploy\deploy-agent.ps1 -ResourceGroup arch-review-rg -ProjectName arch-review
+.\scripts\windows\deploy.ps1 -target agent -ResourceGroup arch-review-rg -ProjectName arch-review
 
 # Clean up either option
-.\deploy\teardown.ps1 -ResourceGroup arch-review-rg
+.\scripts\windows\teardown.ps1 -ResourceGroup arch-review-rg
 ```
 
 From zero to a production endpoint in under 10 minutes — for either path.
@@ -335,7 +335,7 @@ All three interfaces — CLI, Web App, and Hosted Agent — share the same `tool
 ```bash
 git clone <repo-url>
 cd agent-architecture-review-sample
-.\setup.ps1  # or ./setup.sh on Linux/macOS
+.\scripts\windows\setup.ps1  # or bash scripts/linux-mac/setup.sh on Linux/macOS
 
 python run_local.py examples/ecommerce.yaml
 ```
@@ -345,7 +345,7 @@ This runs the full pipeline locally using rule-based parsing — no API keys nee
 ### Step 2: Web UI (Local Development)
 
 ```powershell
-.\start-dev.ps1
+.\scripts\windows\dev.ps1
 # Opens at http://localhost:5173
 ```
 
@@ -356,7 +356,7 @@ This runs the full pipeline locally using rule-based parsing — no API keys nee
 Best if you want a **custom UI** and full control over your API surface.
 
 ```powershell
-.\deploy\deploy-webapp.ps1 -ResourceGroup arch-review-rg -AppName arch-review-web
+.\scripts\windows\deploy.ps1 -target webapp -ResourceGroup arch-review-rg -AppName arch-review-web
 ```
 
 Builds the Docker image via ACR Tasks, provisions App Service, and configures everything from your `.env` file. Your team gets a browser-based architecture review tool with interactive Excalidraw diagrams.
@@ -366,7 +366,7 @@ Builds the Docker image via ACR Tasks, provisions App Service, and configures ev
 Best if you want a **managed, scalable API** with zero infrastructure overhead and channel publishing.
 
 ```powershell
-.\deploy\deploy-agent.ps1 -ResourceGroup arch-review-rg -ProjectName arch-review
+.\scripts\windows\deploy.ps1 -target agent -ResourceGroup arch-review-rg -ProjectName arch-review
 ```
 
 Provisions Azure AI Services, deploys a model, and deploys your agent to Foundry-managed infrastructure. Once deployed, you can publish the agent to **Microsoft Teams**, **M365 Copilot**, or a **stable API endpoint** — all from the Foundry portal.
@@ -423,11 +423,11 @@ The [Excalidraw MCP server](https://github.com/excalidraw/excalidraw-mcp) lets a
 The Architecture Review Agent sample is open source and ready to run:
 
 1. **Clone the repo** — `git clone <repo-url>`
-2. **Run setup** — `.\setup.ps1`
+2. **Run setup** — `.\scripts\windows\setup.ps1`
 3. **Review an architecture** — `python run_local.py examples/ecommerce.yaml`
 4. **Deploy your way:**
-   - **Option A (Web App):** `.\deploy\deploy-webapp.ps1 -ResourceGroup my-rg -AppName arch-review-web`
-   - **Option B (Hosted Agent):** `.\deploy\deploy-agent.ps1 -ResourceGroup my-rg -ProjectName arch-review`
+   - **Option A (Web App):** `.\scripts\windows\deploy.ps1 -target webapp -ResourceGroup my-rg -AppName arch-review-web`
+   - **Option B (Hosted Agent):** `.\scripts\windows\deploy.ps1 -target agent -ResourceGroup my-rg -ProjectName arch-review`
 
 The Microsoft Agent Framework makes building production AI agents surprisingly straightforward. If you have domain expertise wrapped in Python functions, you're closer to a deployed agent than you think — and you get to choose whether you want managed cloud infrastructure or full control.
 

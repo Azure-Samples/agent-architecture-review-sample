@@ -20,7 +20,7 @@
     Model to deploy (default: gpt-4.1).
 
 .EXAMPLE
-    .\deploy\deploy-agent.ps1 -ResourceGroup arch-review-rg -ProjectName arch-review
+    .\scripts\windows\deploy.ps1 -target agent -ResourceGroup arch-review-rg -ProjectName arch-review
 #>
 
 [CmdletBinding()]

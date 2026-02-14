@@ -4,12 +4,13 @@
 # and copies .env.template to .env if it doesn't exist.
 #
 # Usage:
-#   chmod +x setup.sh
-#   ./setup.sh
+#   chmod +x scripts/linux-mac/setup.sh
+#   bash scripts/linux-mac/setup.sh
 
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Go up 2 levels: scripts/linux-mac -> scripts -> project root
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../" && pwd)"
 cd "$SCRIPT_DIR"
 
 echo ""
@@ -85,5 +86,5 @@ echo "Quick start (CLI):"
 echo "  python run_local.py examples/ecommerce.yaml"
 echo ""
 echo "Quick start (Web UI):"
-echo "  ./start-dev.sh"
+echo "  bash scripts/linux-mac/dev.sh"
 echo ""

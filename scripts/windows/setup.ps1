@@ -7,13 +7,14 @@
     requirements.txt, and copies .env.template to .env if it doesn't exist.
 
 .EXAMPLE
-    .\setup.ps1
+    .\scripts\windows\setup.ps1
 #>
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-$ProjectRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+# Go up 2 levels: scripts/windows -> scripts -> project root
+$ProjectRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 Push-Location $ProjectRoot
 
 Write-Host ""
@@ -106,7 +107,7 @@ Write-Host "Quick start (CLI):" -ForegroundColor White
 Write-Host "  python run_local.py examples/ecommerce.yaml" -ForegroundColor White
 Write-Host ""
 Write-Host "Quick start (Web UI):" -ForegroundColor White
-Write-Host "  .\start-dev.ps1" -ForegroundColor White
+Write-Host "  .\scripts\windows\dev.ps1" -ForegroundColor White
 Write-Host ""
 
 Pop-Location
