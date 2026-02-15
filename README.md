@@ -20,7 +20,7 @@ The Architecture Review Agent is an open-source AI agent sample that **reviews s
 
 | | |
 |---|---|
-| [Microsoft Agent Framework](https://github.com/microsoft/agents) | Hosted agent runtime for the Azure AI Foundry deployment path |
+| [Microsoft Agent Framework](https://github.com/microsoft/agent-framework) | Hosted agent runtime for the Azure AI Foundry deployment path |
 | [Excalidraw MCP Server](https://github.com/excalidraw/excalidraw-mcp) | Interactive diagram rendering via Model Context Protocol |
 | [Azure OpenAI (GPT-4.1)](https://learn.microsoft.com/azure/ai-services/openai/) | LLM backend for architecture inference & risk analysis |
 | [FastAPI](https://fastapi.tiangolo.com/) + [React](https://react.dev/) | Full-stack web app deployment path |
@@ -160,7 +160,7 @@ Setup scripts are provided that create a `.venv` virtual environment, install al
 
 ```powershell
 # Clone the repository
-git clone <repo-url>
+git clone https://github.com/Azure-Samples/agent-architecture-review-sample
 cd agent-architecture-review-sample
 
 # Run the setup script (creates .venv, installs deps, copies .env.template → .env)
@@ -171,7 +171,7 @@ cd agent-architecture-review-sample
 
 ```bash
 # Clone the repository
-git clone <repo-url>
+git clone https://github.com/Azure-Samples/agent-architecture-review-sample
 cd agent-architecture-review-sample
 
 # Run the setup script

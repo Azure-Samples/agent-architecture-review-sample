@@ -1,6 +1,6 @@
 # Scripts — Choose Your OS
 
-This folder contains all setup, development, and deployment scripts. Choose the path that matches your OS.
+This folder contains all setup, development, and deployment scripts for the [Architecture Review Agent](https://github.com/Azure-Samples/agent-architecture-review-sample). Choose the path that matches your OS.
 
 ---
 

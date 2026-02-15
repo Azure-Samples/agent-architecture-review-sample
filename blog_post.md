@@ -2,6 +2,8 @@
 
 *Turn natural-language architecture descriptions into risk reports and interactive diagrams — deployed as a hosted agent on Azure AI Foundry in minutes.*
 
+**Repository:** [github.com/Azure-Samples/agent-architecture-review-sample](https://github.com/Azure-Samples/agent-architecture-review-sample)
+
 ---
 
 ## The Problem Every Engineering Team Faces
@@ -10,7 +12,7 @@ You've been there. Someone pastes an architecture sketch into a Slack thread —
 
 Architecture review is **critical** but chronically **under-resourced**. Humans are great at deep analysis, but inconsistent at catching boilerplate risks across dozens of designs. What if you could give every pull request, design doc, or whiteboard photo the same rigorous review — automatically?
 
-That's exactly what the **Architecture Review Agent** sample does. And building it taught us how powerful the [Microsoft Agent Framework](https://github.com/microsoft/agents) and Azure AI Foundry's **Hosted Agents** can be for shipping production AI tools fast.
+That's exactly what the **Architecture Review Agent** sample does. And building it taught us how powerful the [Microsoft Agent Framework](https://github.com/microsoft/agent-framework) and Azure AI Foundry's **Hosted Agents** can be for shipping production AI tools fast.
 
 ---
 
@@ -53,7 +55,7 @@ When we started the Architecture Review Agent, we had working Python functions f
 
 ### The Framework Handles the Hard Parts
 
-The [Microsoft Agent Framework](https://github.com/microsoft/agents) (`azure-ai-agentserver-agentframework`) gives you:
+The [Microsoft Agent Framework](https://github.com/microsoft/agent-framework) (`azure-ai-agentserver-agentframework`) gives you:
 
 - **Tool registration** — expose Python functions as agent tools with type annotations
 - **Conversation management** — the framework handles message routing, context windows, and tool-call orchestration
@@ -333,7 +335,7 @@ All three interfaces — CLI, Web App, and Hosted Agent — share the same `tool
 ### Step 1: Local CLI (No Azure Required)
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/Azure-Samples/agent-architecture-review-sample
 cd agent-architecture-review-sample
 .\scripts\windows\setup.ps1  # or bash scripts/linux-mac/setup.sh on Linux/macOS
 
@@ -422,7 +424,7 @@ The [Excalidraw MCP server](https://github.com/excalidraw/excalidraw-mcp) lets a
 
 The Architecture Review Agent sample is open source and ready to run:
 
-1. **Clone the repo** — `git clone <repo-url>`
+1. **Clone the repo** — `git clone https://github.com/Azure-Samples/agent-architecture-review-sample`
 2. **Run setup** — `.\scripts\windows\setup.ps1`
 3. **Review an architecture** — `python run_local.py examples/ecommerce.yaml`
 4. **Deploy your way:**
@@ -435,7 +437,7 @@ The Microsoft Agent Framework makes building production AI agents surprisingly s
 
 ## Resources
 
-- [Microsoft Agent Framework](https://github.com/microsoft/agents) — the framework powering the Architecture Review Agent
+- [Microsoft Agent Framework](https://github.com/microsoft/agent-framework) — the framework powering the Architecture Review Agent
 - [Azure AI Foundry Hosted Agents](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/concepts/hosted-agents) — managed agent deployment
 - [Azure Developer CLI (azd)](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/) — infrastructure-as-code deployment
 - [Excalidraw MCP Server](https://github.com/excalidraw/excalidraw-mcp) — interactive diagram rendering
