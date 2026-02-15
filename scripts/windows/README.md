@@ -11,7 +11,7 @@ This folder contains all PowerShell scripts for Windows development and deployme
 | **First-time setup** | `.\scripts\windows\setup.ps1` |
 | **Start dev server** | `.\scripts\windows\dev.ps1` |
 | **Deploy hosted agent** | `.\scripts\windows\deploy.ps1 -target agent` |
-| **Deploy web app** | `.\scripts\windows\deploy.ps1 -target webapp` |
+| **Deploy web app** | `.\scripts\windows\deploy.ps1 -target webapp -ResourceGroup arch-review-rg -AppName arch-review-web` |
 | **Clean up resources** | `.\scripts\windows\teardown.ps1 -ResourceGroup arch-review-rg` |
 ## 🔧 Setup Script
 
@@ -172,19 +172,20 @@ Agent endpoint: https://arch-review-agent.azurewebsites.net/
 
 ### Deploy Web App
 ```powershell
-.\scripts\windows\deploy.ps1 -target webapp -ResourceGroup arch-review-rg
+.\scripts\windows\deploy.ps1 -target webapp -ResourceGroup arch-review-rg -AppName arch-review-web
 ```
 
 ### Deploy Web App with Custom Options
 ```powershell
-# Specify project name
+# Specify app name
 .\scripts\windows\deploy.ps1 -target webapp `
     -ResourceGroup arch-review-rg `
-    -ProjectName my-reviewer
+    -AppName my-reviewer
 
 # Specify location
 .\scripts\windows\deploy.ps1 -target webapp `
     -ResourceGroup arch-review-rg `
+    -AppName arch-review-web `
     -Location westus2
 ```
 
