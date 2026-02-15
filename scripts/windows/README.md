@@ -8,14 +8,11 @@ This folder contains all PowerShell scripts for Windows development and deployme
 
 | Task | Command |
 |------|---------|
-| **First-time setup** | `.\setup.ps1` |
-| **Start dev server** | `.\dev.ps1` |
-| **Deploy hosted agent** | `.\deploy.ps1 -target agent` |
-| **Deploy web app** | `.\deploy.ps1 -target webapp` |
-| **Clean up resources** | `.\teardown.ps1` |
-
----
-
+| **First-time setup** | `.\scripts\windows\setup.ps1` |
+| **Start dev server** | `.\scripts\windows\dev.ps1` |
+| **Deploy hosted agent** | `.\scripts\windows\deploy.ps1 -target agent` |
+| **Deploy web app** | `.\scripts\windows\deploy.ps1 -target webapp` |
+| **Clean up resources** | `.\scripts\windows\teardown.ps1 -ResourceGroup arch-review-rg` |
 ## 🔧 Setup Script
 
 ### What It Does
@@ -226,7 +223,7 @@ This operation **CANNOT be undone**. Once executed, all Azure resources are dele
 
 ### Usage
 ```powershell
-.\scripts\windows\teardown.ps1
+.\scripts\windows\teardown.ps1 -ResourceGroup arch-review-rg
 ```
 
 ### With Confirmation
@@ -355,9 +352,9 @@ az group create --name arch-review-rg --location eastus2
 
 ## ✅ Quick Checklist
 
-- [ ] Run `.\setup.ps1` (first time only)
-- [ ] Run `.\dev.ps1` to test locally
+- [ ] Run `.\scripts\windows\setup.ps1` (first time only)
+- [ ] Run `.\scripts\windows\dev.ps1` to test locally
 - [ ] Open http://localhost:5173 to see UI
-- [ ] Run Azure deployment with `.\deploy.ps1 -target agent`
+- [ ] Run Azure deployment with `.\scripts\windows\deploy.ps1 -target agent`
 - [ ] Verify agent in Azure portal
-- [ ] Use `.\teardown.ps1` when done
+- [ ] Use `.\scripts\windows\teardown.ps1 -ResourceGroup arch-review-rg` when done

@@ -13,7 +13,7 @@ If you're using Linux or macOS, see [linux-mac/README.md](linux-mac/README.md) f
 bash scripts/linux-mac/setup.sh                    # Setup (first time only)
 bash scripts/linux-mac/dev.sh                      # Start dev server
 bash scripts/linux-mac/deploy.sh --target agent   # Deploy agent
-bash scripts/linux-mac/teardown.sh                 # Cleanup
+bash scripts/linux-mac/teardown.sh --resource-group arch-review-rg  # Cleanup
 ```
 
 **📖 For detailed commands, options, and troubleshooting:** See [linux-mac/README.md](linux-mac/README.md)
@@ -29,7 +29,7 @@ If you're using Windows, see [windows/README.md](windows/README.md) for detailed
 .\scripts\windows\setup.ps1          # Setup (first time only)
 .\scripts\windows\dev.ps1             # Start dev server
 .\scripts\windows\deploy.ps1 -target agent    # Deploy agent
-.\scripts\windows\teardown.ps1        # Cleanup
+.\scripts\windows\teardown.ps1 -ResourceGroup arch-review-rg  # Cleanup
 ```
 
 **📖 For detailed commands, options, and troubleshooting:** See [windows/README.md](windows/README.md)
@@ -44,7 +44,7 @@ If you're using Windows, see [windows/README.md](windows/README.md) for detailed
 | **Dev Server** | `.\scripts\windows\dev.ps1` | `bash scripts/linux-mac/dev.sh` |
 | **Deploy Agent** | `.\scripts\windows\deploy.ps1 -target agent` | `bash scripts/linux-mac/deploy.sh --target agent` |
 | **Deploy Webapp** | `.\scripts\windows\deploy.ps1 -target webapp` | `bash scripts/linux-mac/deploy.sh --target webapp` |
-| **Cleanup** | `.\scripts\windows\teardown.ps1` | `bash scripts/linux-mac/teardown.sh` |
+| **Cleanup** | `.\scripts\windows\teardown.ps1 -ResourceGroup arch-review-rg` | `bash scripts/linux-mac/teardown.sh --resource-group arch-review-rg` |
 
 ---
 

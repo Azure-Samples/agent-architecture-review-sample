@@ -8,11 +8,11 @@ This folder contains all Bash scripts for Linux and macOS development and deploy
 
 | Task | Command |
 |------|---------|
-| **First-time setup** | `bash setup.sh` |
-| **Start dev server** | `bash dev.sh` |
-| **Deploy hosted agent** | `bash deploy.sh --target agent` |
-| **Deploy web app** | `bash deploy.sh --target webapp` |
-| **Clean up resources** | `bash teardown.sh` |
+| **First-time setup** | `bash scripts/linux-mac/setup.sh` |
+| **Start dev server** | `bash scripts/linux-mac/dev.sh` |
+| **Deploy hosted agent** | `bash scripts/linux-mac/deploy.sh --target agent` |
+| **Deploy web app** | `bash scripts/linux-mac/deploy.sh --target webapp` |
+| **Clean up resources** | `bash scripts/linux-mac/teardown.sh --resource-group arch-review-rg` |
 
 ---
 
@@ -248,7 +248,7 @@ This operation **CANNOT be undone**. Once executed, all Azure resources are dele
 
 ### Usage
 ```bash
-bash scripts/linux-mac/teardown.sh
+bash scripts/linux-mac/teardown.sh --resource-group arch-review-rg
 ```
 
 ### With Confirmation
@@ -415,9 +415,9 @@ bash scripts/linux-mac/teardown.sh
 
 ## ✅ Quick Checklist
 
-- [ ] Run `bash setup.sh` (first time only)
-- [ ] Run `bash dev.sh` to test locally
+- [ ] Run `bash scripts/linux-mac/setup.sh` (first time only)
+- [ ] Run `bash scripts/linux-mac/dev.sh` to test locally
 - [ ] Open http://localhost:5173 to see UI
-- [ ] Run Azure deployment with `bash deploy.sh --target agent`
+- [ ] Run Azure deployment with `bash scripts/linux-mac/deploy.sh --target agent`
 - [ ] Verify agent in Azure portal
-- [ ] Use `bash teardown.sh` when done
+- [ ] Use `bash scripts/linux-mac/teardown.sh --resource-group arch-review-rg` when done

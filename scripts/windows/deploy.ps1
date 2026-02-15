@@ -57,19 +57,26 @@ $ErrorActionPreference = "Stop"
 # Get script directory
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 
-# Prepare arguments for target script
-$args = @()
-if ($ResourceGroup) { $args += @("-ResourceGroup", $ResourceGroup) }
-$args += @("-ProjectName", $ProjectName)
-$args += @("-Location", $Location)
-$args += @("-ModelName", $ModelName)
-
 # Route to appropriate script
 Write-Host ""
 if ($target -eq "agent") {
+    # Prepare arguments for Hosted Agent deployment
+    $agentArgs = @()
+    if ($ResourceGroup) { $agentArgs += @("-ResourceGroup", $ResourceGroup) }
+    $agentArgs += @("-ProjectName", $ProjectName)
+    $agentArgs += @("-Location", $Location)
+    $agentArgs += @("-ModelName", $ModelName)
+
     Write-Host "🚀 Deploying Hosted Agent..." -ForegroundColor Cyan
-    & "$scriptDir/deploy-agent.ps1" @args
+    & "$scriptDir/deploy-agent.ps1" @agentArgs
 } else {
+    # Prepare arguments for Web App deployment
+    $webappArgs = @()
+    if ($ResourceGroup) { $webappArgs += @("-ResourceGroup", $ResourceGroup) }
+    # Map ProjectName to AppName for webapp deployments
+    $webappArgs += @("-AppName", $ProjectName)
+    $webappArgs += @("-Location", $Location)
+
     Write-Host "🚀 Deploying Web App..." -ForegroundColor Cyan
-    & "$scriptDir/deploy-webapp.ps1" @args
+    & "$scriptDir/deploy-webapp.ps1" @webappArgs
 }
