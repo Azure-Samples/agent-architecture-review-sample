@@ -90,7 +90,7 @@ A **managed agent** deployed to Azure AI Foundry's Hosted Agent infrastructure. 
 | **Conversations** | Stateless REST (you manage state) | Platform-managed conversation persistence |
 | **Channel publishing** | N/A (custom UI) | Teams, M365 Copilot, Web preview, stable endpoint |
 | **Observability** | Add your own (App Insights, etc.) | Built-in OpenTelemetry + Azure Monitor |
-| **Deploy command** | `.\scripts\windows\deploy.ps1 -target webapp` | `azd ai agent deploy` or `.\scripts\windows\deploy.ps1 -target agent` |
+| **Deploy command** | `.\scripts\windows\deploy.ps1 -target webapp -AppName arch-review-web` | `azd ai agent deploy` or `.\scripts\windows\deploy.ps1 -target agent` |
 | **Teardown** | `.\scripts\windows\teardown.ps1 -ResourceGroup arch-review-rg` | `.\scripts\windows\teardown.ps1 -ResourceGroup arch-review-rg` |
 
 > **Tip:** You can run both simultaneously use the Web App for your internal team's browser-based reviews, and the Hosted Agent for API consumers and Teams/Copilot integration.
