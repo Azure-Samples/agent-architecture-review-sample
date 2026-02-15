@@ -5,7 +5,7 @@
 #
 # Usage:
 #   bash scripts/linux-mac/deploy.sh --target agent [other args]
-#   bash scripts/linux-mac/deploy.sh --target webapp [other args]
+#   bash scripts/linux-mac/deploy.sh --target webapp --app-name <name> [other args]
 #
 # Default: agent
 
@@ -27,7 +27,8 @@ while [[ $# -gt 0 ]]; do
 done
 
 # ── Validate target ──────────────────────────────────────────────────────────
-case "$TARGET" in agent)
+case "$TARGET" in
+    agent)
         echo "🚀 Deploying hosted agent..."
         exec bash "$SCRIPT_DIR/deploy-agent.sh" "$@"
         ;;
