@@ -67,23 +67,25 @@ $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 Write-Host ""
 if ($target -eq "agent") {
     # Prepare arguments for Hosted Agent deployment
-    $agentArgs = @()
-    if ($ResourceGroup) { $agentArgs += @("-ResourceGroup", $ResourceGroup) }
-    $agentArgs += @("-ProjectName", $ProjectName)
-    $agentArgs += @("-Location", $Location)
-    $agentArgs += @("-ModelName", $ModelName)
+    $agentArgs = @{
+        ResourceGroup = $ResourceGroup
+        ProjectName = $ProjectName
+        Location = $Location
+        ModelName = $ModelName
+    }
 
     Write-Host "🚀 Deploying Hosted Agent..." -ForegroundColor Cyan
     & "$scriptDir/deploy-agent.ps1" @agentArgs
 } else {
     # Prepare arguments for Web App deployment
-    $webappArgs = @()
-    if ($ResourceGroup) { $webappArgs += @("-ResourceGroup", $ResourceGroup) }
-    
     # Use AppName if provided, otherwise fall back to ProjectName for backward compatibility
     $webAppName = if ($AppName) { $AppName } else { $ProjectName }
-    $webappArgs += @("-AppName", $webAppName)
-    $webappArgs += @("-Location", $Location)
+    
+    $webappArgs = @{
+        ResourceGroup = $ResourceGroup
+        AppName = $webAppName
+        Location = $Location
+    }
 
     Write-Host "🚀 Deploying Web App..." -ForegroundColor Cyan
     & "$scriptDir/deploy-webapp.ps1" @webappArgs

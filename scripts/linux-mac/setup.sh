@@ -40,7 +40,44 @@ if [ -z "$PYTHON" ]; then
     exit 1
 fi
 
-# ── 2. Create .venv ──────────────────────────────────────────────────────────
+# ── 2. Check Azure Developer CLI (azd) ──────────────────────────────────────
+echo ""
+if ! command -v azd &>/dev/null; then
+    echo "[WARN] Azure Developer CLI (azd) not found."
+    echo "[..] Attempting to install azd..."
+    
+    # Install azd
+    if curl -fsSL https://aka.ms/install-azd.sh | bash; then
+        # Source profile to get azd in PATH
+        if [ -f "$HOME/.bashrc" ]; then
+            # shellcheck disable=SC1091
+            source "$HOME/.bashrc" 2>/dev/null || true
+        fi
+        if [ -f "$HOME/.zshrc" ]; then
+            # shellcheck disable=SC1091
+            source "$HOME/.zshrc" 2>/dev/null || true
+        fi
+        
+        if command -v azd &>/dev/null; then
+            echo "[OK] Azure Developer CLI installed successfully: $(azd version)"
+        else
+            echo "[WARN] azd installed but not in PATH. Restart terminal or run: source ~/.bashrc"
+        fi
+    else
+        echo "[WARN] Failed to install azd. Install manually: curl -fsSL https://aka.ms/install-azd.sh | bash"
+    fi
+else
+    echo "[OK] Found $(azd version)"
+    
+    # Check if azd supports AI agent commands
+    if azd ai --help 2>&1 | grep -q "agent"; then
+        echo "[OK] azd AI agent support detected."
+    else
+        echo "[WARN] azd AI agent commands not available. Update azd to the latest version."
+    fi
+fi
+
+# ── 3. Create .venv ──────────────────────────────────────────────────────────
 if [ -d ".venv" ]; then
     echo "[OK] Virtual environment already exists at .venv/"
 else
@@ -49,7 +86,7 @@ else
     echo "[OK] Created .venv/"
 fi
 
-# ── 3. Activate & install dependencies ────────────────────────────────────────
+# ── 4. Activate & install dependencies ────────────────────────────────────────
 echo "[..] Activating virtual environment..."
 # shellcheck disable=SC1091
 source .venv/bin/activate
@@ -62,7 +99,7 @@ python -m pip install -r requirements.txt
 
 echo "[OK] Dependencies installed."
 
-# ── 4. Copy .env.template → .env (if needed) ─────────────────────────────────
+# ── 5. Copy .env.template → .env (if needed) ─────────────────────────────────
 if [ ! -f ".env" ]; then
     if [ -f ".env.template" ]; then
         cp .env.template .env
@@ -74,7 +111,7 @@ else
     echo "[OK] .env already exists."
 fi
 
-# ── 5. Create output directory ─────────────────────────────────────────────────────────────
+# ── 6. Create output directory ─────────────────────────────────────────────────────────────
 if [ ! -d "output" ]; then
     mkdir -p output
     echo "[OK] Created output/ directory"

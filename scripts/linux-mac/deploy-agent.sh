@@ -62,20 +62,24 @@ if ! command -v az &>/dev/null; then
 fi
 echo "  Azure CLI $(az version --query '"azure-cli"' -o tsv)"
 
+# Azure Developer CLI (optional for hosted agent deployment)
+AZD_AVAILABLE=false
 if ! command -v azd &>/dev/null; then
-    echo "[ERROR] Azure Developer CLI (azd) not found. Install: curl -fsSL https://aka.ms/install-azd.sh | bash"
-    exit 1
+    echo "  [WARNING] Azure Developer CLI (azd) not found."
+    echo "  Hosted agent deployment will be skipped. Install: curl -fsSL https://aka.ms/install-azd.sh | bash"
+else
+    echo "  azd $(azd version)"
+    AZD_AVAILABLE=true
+    
+    azd auth login --check-status &>/dev/null || azd auth login
+    echo "  azd authenticated."
 fi
-echo "  azd $(azd version)"
 
 if ! az account show &>/dev/null; then
     echo "[..] Running az login..."
     az login
 fi
 echo "  Subscription: $(az account show --query name -o tsv)"
-
-azd auth login --check-status &>/dev/null || azd auth login
-echo "  azd authenticated."
 
 # ── 2. Resource Group ────────────────────────────────────────────────────────
 echo "[2/6] Creating resource group '$RESOURCE_GROUP'..."
@@ -118,16 +122,20 @@ EXISTING_DEPLOY=$(az cognitiveservices account deployment list \
     --query "[?name=='$MODEL_NAME'].name" -o tsv 2>/dev/null || true)
 
 if [[ -z "$EXISTING_DEPLOY" ]]; then
-    az cognitiveservices account deployment create \
+    if ! az cognitiveservices account deployment create \
         --name "$AI_ACCOUNT_NAME" \
         --resource-group "$RESOURCE_GROUP" \
         --deployment-name "$MODEL_NAME" \
         --model-name "$MODEL_NAME" \
-        --model-version "2024-08-06" \
+        --model-version "2025-04-14" \
         --model-format OpenAI \
         --sku-capacity 30 \
         --sku-name Standard \
-        --output none
+        --output none 2>&1; then
+        echo "  [ERROR] Failed to deploy model. The model may not be supported in this region."
+        echo "  Try a different model (e.g., gpt-4, gpt-35-turbo) or region."
+        exit 1
+    fi
     echo "  Deployed model: $MODEL_NAME"
 else
     echo "  Model deployment '$MODEL_NAME' already exists."
@@ -136,11 +144,44 @@ fi
 # ── 5. Deploy hosted agent ──────────────────────────────────────────────────
 echo "[5/6] Deploying hosted agent with azd..."
 
-export AZURE_AI_PROJECT_ENDPOINT="$AI_ENDPOINT"
-export MODEL_DEPLOYMENT_NAME="$MODEL_NAME"
-
-azd ai agent deploy
-echo "  Agent deployed."
+if [ "$AZD_AVAILABLE" = false ]; then
+    echo "  [SKIPPED] azd not available."
+    echo "  Azure resources are provisioned. Deploy agent manually via Azure AI Foundry portal."
+else
+    # Initialize azd environment if not already done
+    if [ ! -d ".azure" ]; then
+        echo "  [..] Initializing azd environment..."
+        azd init --subscription "$(az account show --query id -o tsv)" \
+            --location "$LOCATION" \
+            --environment "${PROJECT_NAME}-env" &>/dev/null
+    fi
+    
+    # Initialize agent with agent.yaml
+    if [ -f "agent.yaml" ]; then
+        echo "  [..] Initializing azd AI agent configuration..."
+        
+        export AZURE_AI_PROJECT_ENDPOINT="$AI_ENDPOINT"
+        export MODEL_DEPLOYMENT_NAME="$MODEL_NAME"
+        export AZURE_SUBSCRIPTION_ID=$(az account show --query id -o tsv)
+        export AZURE_RESOURCE_GROUP="$RESOURCE_GROUP"
+        
+        if azd ai agent init -m agent.yaml 2>&1; then
+            echo "  [..] Deploying agent..."
+            if azd deploy 2>&1; then
+                echo "  Agent deployed successfully."
+            else
+                echo "  [ERROR] Failed to deploy hosted agent."
+                echo "  Azure resources are provisioned. Deploy agent manually via Azure AI Foundry portal."
+            fi
+        else
+            echo "  [ERROR] Failed to initialize azd agent configuration."
+            echo "  Deploy agent manually via Azure AI Foundry portal."
+        fi
+    else
+        echo "  [SKIPPED] agent.yaml not found in current directory."
+        echo "  Deploy agent manually via Azure AI Foundry portal or place agent.yaml in project root."
+    fi
+fi
 
 # ── 6. RBAC guidance ────────────────────────────────────────────────────────
 SCOPE=$(az cognitiveservices account show \

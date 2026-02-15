@@ -50,7 +50,42 @@ if (-not $python) {
     exit 1
 }
 
-# ── 2. Create .venv ──────────────────────────────────────────────────────────
+# ── 2. Check Azure Developer CLI (azd) ──────────────────────────────────────
+Write-Host ""
+$azdVersion = azd version 2>$null
+if (-not $azdVersion) {
+    Write-Host "[WARN] Azure Developer CLI (azd) not found." -ForegroundColor Yellow
+    Write-Host "[..] Attempting to install azd via winget..." -ForegroundColor Yellow
+    
+    # Check if winget is available
+    if (Get-Command winget -ErrorAction SilentlyContinue) {
+        try {
+            winget install Microsoft.Azd --accept-package-agreements --accept-source-agreements --silent
+            $azdVersion = azd version 2>$null
+            if ($azdVersion) {
+                Write-Host "[OK] Azure Developer CLI installed successfully: $azdVersion" -ForegroundColor Green
+            } else {
+                Write-Host "[WARN] azd installation completed but azd command not found. Restart terminal." -ForegroundColor Yellow
+            }
+        } catch {
+            Write-Host "[WARN] Failed to install azd via winget. Install manually: winget install Microsoft.Azd" -ForegroundColor Yellow
+        }
+    } else {
+        Write-Host "[WARN] winget not available. Install azd manually from: https://aka.ms/azure-dev/install" -ForegroundColor Yellow
+    }
+} else {
+    Write-Host "[OK] Found $azdVersion" -ForegroundColor Green
+    
+    # Check if azd supports AI agent commands
+    $azdHelp = azd ai --help 2>&1 | Out-String
+    if ($azdHelp -match "agent") {
+        Write-Host "[OK] azd AI agent support detected." -ForegroundColor Green
+    } else {
+        Write-Host "[WARN] azd AI agent commands not available. Update: winget upgrade Microsoft.Azd" -ForegroundColor Yellow
+    }
+}
+
+# ── 3. Create .venv ──────────────────────────────────────────────────────────
 $venvDir = Join-Path $ProjectRoot ".venv"
 if (Test-Path $venvDir) {
     Write-Host "[OK] Virtual environment already exists at .venv/" -ForegroundColor Green
@@ -60,7 +95,7 @@ if (Test-Path $venvDir) {
     Write-Host "[OK] Created .venv/" -ForegroundColor Green
 }
 
-# ── 3. Activate & install dependencies ────────────────────────────────────────
+# ── 4. Activate & install dependencies ────────────────────────────────────────
 $activateScript = Join-Path $venvDir "Scripts\Activate.ps1"
 if (-not (Test-Path $activateScript)) {
     Write-Host "[ERROR] Cannot find $activateScript" -ForegroundColor Red
@@ -78,7 +113,7 @@ Write-Host "[..] Installing dependencies from requirements.txt..." -ForegroundCo
 & python -m pip install -r (Join-Path $ProjectRoot "requirements.txt")
 Write-Host "[OK] Dependencies installed." -ForegroundColor Green
 
-# ── 4. Copy .env.template → .env (if needed) ─────────────────────────────────
+# ── 5. Copy .env.template → .env (if needed) ─────────────────────────────────
 $envFile = Join-Path $ProjectRoot ".env"
 $envTemplate = Join-Path $ProjectRoot ".env.template"
 if (-not (Test-Path $envFile)) {
@@ -91,7 +126,7 @@ if (-not (Test-Path $envFile)) {
 } else {
     Write-Host "[OK] .env already exists." -ForegroundColor Green
 }
-# ── 5. Create output directory ─────────────────────────────────────────────────────────────
+# ── 6. Create output directory ─────────────────────────────────────────────────────────────
 $outputDir = Join-Path $ProjectRoot "output"
 if (-not (Test-Path $outputDir)) {
     New-Item -ItemType Directory -Path $outputDir | Out-Null

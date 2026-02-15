@@ -63,13 +63,25 @@ if (-not $azVersion) {
 }
 Write-Host "  Azure CLI $azVersion" -ForegroundColor Green
 
-# Azure Developer CLI
+# Azure Developer CLI (optional for hosted agent deployment)
 $azdVersion = azd version 2>$null
+$azdAvailable = $false
 if (-not $azdVersion) {
-    Write-Host "[ERROR] Azure Developer CLI (azd) not found. Install: winget install Microsoft.Azd" -ForegroundColor Red
-    Pop-Location; exit 1
+    Write-Host "  [WARNING] Azure Developer CLI (azd) not found." -ForegroundColor Yellow
+    Write-Host "  Hosted agent deployment will be skipped. Install: winget install Microsoft.Azd" -ForegroundColor Yellow
+} else {
+    Write-Host "  azd $azdVersion" -ForegroundColor Green
+    $azdAvailable = $true
+    
+    # azd auth
+    try {
+        azd auth login --check-status 2>$null | Out-Null
+    } catch {
+        Write-Host "[..] Running azd auth login..." -ForegroundColor Yellow
+        azd auth login
+    }
+    Write-Host "  azd authenticated." -ForegroundColor Green
 }
-Write-Host "  azd $azdVersion" -ForegroundColor Green
 
 # Login
 $account = az account show --query name -o tsv 2>$null
@@ -78,15 +90,6 @@ if (-not $account) {
     az login
 }
 Write-Host "  Subscription: $(az account show --query name -o tsv)" -ForegroundColor Green
-
-# azd auth
-try {
-    azd auth login --check-status 2>$null | Out-Null
-} catch {
-    Write-Host "[..] Running azd auth login..." -ForegroundColor Yellow
-    azd auth login
-}
-Write-Host "  azd authenticated." -ForegroundColor Green
 
 # ── 2. Resource Group ────────────────────────────────────────────────────────
 Write-Host "[2/6] Creating resource group '$ResourceGroup'..." -ForegroundColor Yellow
@@ -138,11 +141,18 @@ if (-not $existingDeployment) {
         --resource-group $ResourceGroup `
         --deployment-name $ModelName `
         --model-name $ModelName `
-        --model-version "2024-08-06" `
+        --model-version "2025-04-14" `
         --model-format OpenAI `
         --sku-capacity 30 `
         --sku-name Standard `
-        --output none
+        --output none 2>&1 | Out-String | Write-Host
+    
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "  [ERROR] Failed to deploy model. The model may not be supported in this region." -ForegroundColor Red
+        Write-Host "  Try a different model (e.g., gpt-4, gpt-35-turbo) or region." -ForegroundColor Yellow
+        Pop-Location
+        exit 1
+    }
     Write-Host "  Deployed model: $ModelName" -ForegroundColor Green
 } else {
     Write-Host "  Model deployment '$ModelName' already exists." -ForegroundColor Green
@@ -151,12 +161,49 @@ if (-not $existingDeployment) {
 # ── 5. Deploy hosted agent via azd ──────────────────────────────────────────
 Write-Host "[5/6] Deploying hosted agent with azd..." -ForegroundColor Yellow
 
-# Set environment variables for azd
-$env:AZURE_AI_PROJECT_ENDPOINT = $aiEndpoint
-$env:MODEL_DEPLOYMENT_NAME = $ModelName
-
-azd ai agent deploy
-Write-Host "  Agent deployed." -ForegroundColor Green
+if (-not $azdAvailable) {
+    Write-Host "  [SKIPPED] azd not available." -ForegroundColor Yellow
+    Write-Host "  Azure resources are provisioned. Deploy agent manually via Azure AI Foundry portal." -ForegroundColor Yellow
+} else {
+    # Initialize azd environment if not already done
+    if (-not (Test-Path ".azure")) {
+        Write-Host "  [..] Initializing azd environment..." -ForegroundColor Yellow
+        azd init --subscription $((az account show --query id -o tsv)) `
+            --location $Location `
+            --environment "${ProjectName}-env" 2>&1 | Out-Null
+    }
+    
+    # Initialize agent with agent.yaml
+    if (Test-Path "agent.yaml") {
+        Write-Host "  [..] Initializing azd AI agent configuration..." -ForegroundColor Yellow
+        
+        # Set environment variables for azd
+        $env:AZURE_AI_PROJECT_ENDPOINT = $aiEndpoint
+        $env:MODEL_DEPLOYMENT_NAME = $ModelName
+        $env:AZURE_SUBSCRIPTION_ID = az account show --query id -o tsv
+        $env:AZURE_RESOURCE_GROUP = $ResourceGroup
+        
+        azd ai agent init -m agent.yaml 2>&1 | Out-String | Write-Host
+        
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "  [..] Deploying agent..." -ForegroundColor Yellow
+            azd deploy 2>&1 | Out-String | Write-Host
+            
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host "  [ERROR] Failed to deploy hosted agent." -ForegroundColor Red
+                Write-Host "  Azure resources are provisioned. Deploy agent manually via Azure AI Foundry portal." -ForegroundColor Yellow
+            } else {
+                Write-Host "  Agent deployed successfully." -ForegroundColor Green
+            }
+        } else {
+            Write-Host "  [ERROR] Failed to initialize azd agent configuration." -ForegroundColor Red
+            Write-Host "  Deploy agent manually via Azure AI Foundry portal." -ForegroundColor Yellow
+        }
+    } else {
+        Write-Host "  [SKIPPED] agent.yaml not found in current directory." -ForegroundColor Yellow
+        Write-Host "  Deploy agent manually via Azure AI Foundry portal or place agent.yaml in project root." -ForegroundColor Yellow
+    }
+}
 
 # ── 6. Configure RBAC ───────────────────────────────────────────────────────
 Write-Host "[6/6] Configuring RBAC..." -ForegroundColor Yellow
