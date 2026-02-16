@@ -87,7 +87,7 @@ Ctrl+C  # Stops both FastAPI and Vite
 - Validates Azure login
 - Builds Docker container
 - Uploads to Azure Container Registry (ACR)
-- Deploys as Hosted Agent to Azure AI Foundry
+- Deploys as Hosted Agent to Microsoft Foundry
 - Configures managed identity and RBAC
 
 ### Prerequisites
@@ -147,7 +147,7 @@ Ctrl+C  # Stops both FastAPI and Vite
 ✅ Building Docker image...
 ✅ Pushing to ACR...
 ✅ Creating AI Services account...
-✅ Creating AI Foundry project...
+✅ Creating Microsoft Foundry project...
 ✅ Deploying model...
 ✅ Deploying agent...
 ✅ Configuring RBAC...
@@ -158,7 +158,7 @@ Agent endpoint: https://arch-review-agent.azurewebsites.net/
 ```
 
 ### After Deployment
-- Agent available in Azure AI Foundry portal
+- Agent available in Microsoft Foundry portal
 - Can publish to Teams, M365 Copilot, or stable endpoint
 - Use `/responses` endpoint for API calls
 
