@@ -20,7 +20,7 @@ The Architecture Review Agent is an open-source AI agent sample that **reviews s
 
 | | |
 |---|---|
-| [Microsoft Agent Framework](https://github.com/microsoft/agent-framework) | Hosted agent runtime for the Azure AI Foundry deployment path |
+| [Microsoft Agent Framework](https://github.com/microsoft/agents) | Hosted agent runtime for the Microsoft Foundry deployment path |
 | [Excalidraw MCP Server](https://github.com/excalidraw/excalidraw-mcp) | Interactive diagram rendering via Model Context Protocol |
 | [Azure OpenAI (GPT-4.1)](https://learn.microsoft.com/azure/ai-services/openai/) | LLM backend for architecture inference & risk analysis |
 | [FastAPI](https://fastapi.tiangolo.com/) + [React](https://react.dev/) | Full-stack web app deployment path |
@@ -61,14 +61,14 @@ A traditional full-stack web application: **FastAPI** backend + **React** fronte
 
 **Key files:** [api.py](api.py) · [Dockerfile.web](Dockerfile.web) · [frontend/](frontend/) · [scripts/windows/deploy.ps1](scripts/windows/deploy.ps1)
 
-### Option B — Hosted Agent (Azure AI Foundry Agent Service)
+### Option B — Hosted Agent (Microsoft Foundry Agent Service)
 
-A **managed agent** deployed to Azure AI Foundry's Hosted Agent infrastructure. The platform handles containerisation, identity, scaling, and API compliance.
+A **managed agent** deployed to Microsoft Foundry's Hosted Agent infrastructure. The platform handles containerisation, identity, scaling, and API compliance.
 
 - **OpenAI Responses API** — your agent automatically exposes the OpenAI-compatible `/responses` endpoint
-- **Managed infrastructure** — Azure AI Foundry builds, hosts, and scales the container (0 → 5 replicas, including scale-to-zero)
+- **Managed infrastructure** — Microsoft Foundry builds, hosts, and scales the container (0 → 5 replicas, including scale-to-zero)
 - **Managed identity** — no API keys in the container; the platform assigns a system-managed identity with RBAC
-- **Conversation persistence** — the Agent Service manages conversation state across requests
+- **Conversation persistence** — the Foundry Agent Service manages conversation state across requests
 - **Channel publishing** — publish your agent to **Microsoft Teams**, **Microsoft 365 Copilot**, a **Web App preview**, or a **stable API endpoint** — no extra code required
 - **Observability** — built-in **OpenTelemetry** tracing with Azure Monitor integration
 
@@ -84,7 +84,7 @@ A **managed agent** deployed to Azure AI Foundry's Hosted Agent infrastructure. 
 | **Container** | [Dockerfile.web](Dockerfile.web) (multi-stage Node + Python) | [Dockerfile](Dockerfile) (Python only) |
 | **API style** | Custom REST (`/api/review`, `/api/infer`) | OpenAI Responses API (`/responses`) |
 | **UI included** | Yes — React + Excalidraw | No (API only; use Foundry Playground or channels) |
-| **Azure target** | Azure App Service + ACR | Azure AI Foundry Agent Service |
+| **Azure target** | Azure App Service + ACR | Microsoft Foundry Agent Service |
 | **Scaling** | App Service Plan (manual / auto-scale rules) | Platform-managed (0–5 replicas, scale-to-zero) |
 | **Identity** | Configured by you (API key, Azure AD) | System-assigned managed identity (automatic) |
 | **Conversations** | Stateless REST (you manage state) | Platform-managed conversation persistence |
@@ -344,9 +344,9 @@ bash scripts/linux-mac/teardown.sh --resource-group arch-review-rg
 | `GET`  | `/api/download/excalidraw/{run_id}` | Download Excalidraw JSON |
 | `GET`  | `/api/health` | Health check |
 
-### Option B — Hosted Agent (Azure AI Foundry Agent Service)
+### Option B — Hosted Agent (Microsoft Foundry Agent Service)
 
-The hosted agent starts an **OpenAI Responses-compatible** API server. Locally it runs on port 8088; when deployed to Azure AI Foundry, the platform manages the endpoint, scaling, identity, and conversation state. See [Two Deployment Options](#two-deployment-options) for a comparison with Option A.
+The hosted agent starts an **OpenAI Responses-compatible** API server. Locally it runs on port 8088; when deployed to Microsoft Foundry, the platform manages the endpoint, scaling, identity, and conversation state. See [Two Deployment Options](#two-deployment-options) for a comparison with Option A.
 
 #### Local Testing
 
@@ -370,7 +370,7 @@ docker build -t arch-review .
 docker run -p 8088:8088 --env-file .env arch-review
 ```
 
-#### Deploy to Azure AI Foundry (Hosted Agent)
+#### Deploy to Microsoft Foundry (Hosted Agent)
 
 The [`agent.yaml`](agent.yaml) manifest defines the hosted agent configuration (see the snippet under [Option B — Hosted Agent](#option-b--hosted-agent-azure-ai-foundry-agent-service) above). Deploy using the Azure Developer CLI (`azd`) or the automated scripts.
 
@@ -397,7 +397,7 @@ azd auth login
 azd ai agent deploy
 ```
 
-#### What Azure AI Foundry Provides
+#### What Microsoft Foundry Provides
 
 Once deployed as a hosted agent, the platform manages:
 
@@ -406,7 +406,7 @@ Once deployed as a hosted agent, the platform manages:
 | **Container hosting** | Built via ACR Tasks, deployed to Foundry-managed compute |
 | **Auto-scaling** | 0 → 5 replicas with scale-to-zero support |
 | **Managed identity** | System-assigned identity with RBAC — no API keys in the container |
-| **Conversation persistence** | The Agent Service stores and manages conversation state |
+| **Conversation persistence** | The Foundry Agent Service stores and manages conversation state |
 | **Channel publishing** | Publish to **Microsoft Teams**, **M365 Copilot**, **Web App preview**, or a **stable API endpoint** |
 | **Observability** | Built-in OpenTelemetry tracing integrated with Azure Monitor |
 | **API compliance** | Automatic OpenAI Responses API endpoint |
@@ -436,9 +436,9 @@ For official Microsoft documentation, see [Hosted Agents documentation](https://
 
 This sample requires a deployed model (GPT-4.1 recommended) on Azure OpenAI or Azure AI Foundry.
 
-#### Option 1: Azure AI Foundry (recommended)
+#### Option 1: Microsoft Foundry (recommended)
 
-1. Go to [Azure AI Foundry](https://ai.azure.com) and create or open a project.
+1. Go to [Microsoft Foundry](https://ai.azure.com) and create or open a project.
 2. Navigate to **Models + endpoints** → **Deploy model** → **Deploy base model**.
 3. Select **gpt-4.1** (or your preferred model) and click **Deploy**.
 4. Copy the **Project endpoint** (e.g., `https://<project>.services.ai.azure.com`).
@@ -450,10 +450,10 @@ PROJECT_ENDPOINT=https://<your-project>.services.ai.azure.com
 MODEL_DEPLOYMENT_NAME=gpt-4.1
 ```
 
-#### Option 2: Azure OpenAI Service
+#### Option 2: Azure OpenAI
 
 1. In the [Azure Portal](https://portal.azure.com), create an **Azure OpenAI** resource.
-2. Go to **Azure AI Foundry** → select the resource → **Deployments** → **Create deployment**.
+2. Go to **Microsoft Foundry** → select the resource → **Deployments** → **Create deployment**.
 3. Choose **gpt-4.1**, set the deployment name, and deploy.
 4. Copy the **Endpoint** (e.g., `https://<resource>.openai.azure.com/`).
 5. Set the environment variables:
