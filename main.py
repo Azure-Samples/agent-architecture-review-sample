@@ -1,6 +1,6 @@
 """
 Architecture Review Agent — AI Architecture Reviewer & Diagram Generator.
-Uses Microsoft Agent Framework with Azure AI Foundry.
+Uses Microsoft Agent Framework with Microsoft Foundry.
 Ready for deployment to Foundry Hosted Agent service.
 """
 
