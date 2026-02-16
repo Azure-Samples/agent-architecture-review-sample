@@ -185,7 +185,7 @@ Deploy with one command:
 
 ### Side-by-Side Comparison
 
-| | **Web App (App Service)** | **Hosted Agent (AI Foundry)** |
+| | **Web App (App Service)** | **Hosted Agent (Microsoft Foundry)** |
 |---|---|---|
 | **API style** | Custom REST endpoints | OpenAI Responses API (automatic) |
 | **UI included** | Yes — React + Excalidraw | No (API only; use Foundry Playground or channels) |

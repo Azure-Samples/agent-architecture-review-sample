@@ -128,7 +128,7 @@ Ctrl+C  # Stops both FastAPI and Vite
   Example: "arch-review-rg"
   
 # -ProjectName string
-  AI Foundry project name (default: "arch-review")
+  Microsoft Foundry project name (default: "arch-review")
   Example: "my-project"
   
 # -Location string

@@ -13,7 +13,7 @@
     Name of the Azure resource group (passed to target script).
 
 .PARAMETER ProjectName
-    Name for the AI Foundry project (used for agent deployments).
+    Name for the Microsoft Foundry project (used for agent deployments).
 
 .PARAMETER AppName
     Name for the App Service web app (used for webapp deployments).
