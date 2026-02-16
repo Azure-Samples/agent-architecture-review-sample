@@ -334,7 +334,7 @@ az group create --name arch-review-rg --location eastus2
     -ResourceGroup arch-review-rg
 
 # 4. Wait for deployment to complete
-# 5. Agent appears in Azure AI Foundry portal
+# 5. Agent appears in Microsoft Foundry portal
 ```
 
 ### Clean Up
@@ -360,5 +360,5 @@ az group create --name arch-review-rg --location eastus2
 - [ ] Run `.\scripts\windows\dev.ps1` to test locally
 - [ ] Open http://localhost:5173 to see UI
 - [ ] Run Azure deployment with `.\scripts\windows\deploy.ps1 -target agent`
-- [ ] Verify agent in Azure portal
+- [ ] Verify agent in Microsoft Foundry portal
 - [ ] Use `.\scripts\windows\teardown.ps1 -ResourceGroup arch-review-rg` when done

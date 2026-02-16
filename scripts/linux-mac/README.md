@@ -104,7 +104,7 @@ tail -f dev.log
 - Validates Azure login
 - Builds Docker container
 - Uploads to Azure Container Registry (ACR)
-- Deploys as Hosted Agent to Azure AI Foundry
+- Deploys as Hosted Agent to Microsoft Foundry
 - Configures managed identity and RBAC
 
 ### Prerequisites
@@ -178,7 +178,7 @@ Agent endpoint: https://arch-review-agent.azurewebsites.net/
 ```
 
 ### After Deployment
-- Agent available in Azure AI Foundry portal
+- Agent available in Microsoft Foundry portal
 - Can publish to Teams, M365 Copilot, or stable endpoint
 - Use `/responses` endpoint for API calls
 
@@ -394,7 +394,7 @@ bash scripts/linux-mac/deploy.sh \
     --resource-group arch-review-rg
 
 # 4. Wait for deployment to complete
-# 5. Agent appears in Azure AI Foundry portal
+# 5. Agent appears in Microsoft Foundry portal
 ```
 
 ### Clean Up

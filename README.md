@@ -13,7 +13,7 @@ The Architecture Review Agent is an open-source AI agent sample that **reviews s
 - **Instant architecture feedback** — get a prioritised risk assessment and improvement plan in seconds, not days.
 - **Works with what you already have** — paste a YAML spec, drag in a README, or describe your system in plain English. The LLM infers structure when the input isn't formal.
 - **Interactive diagrams** — auto-generated Excalidraw diagrams render components, connections, and data flows. Edit them in-browser or export to PNG.
-- **Two deployment options** — run as a full-stack **Web App** (FastAPI + React) on Azure App Service, or as a **Hosted Agent** on Azure AI Foundry with Teams / M365 Copilot integration.
+- **Two deployment options** — run as a full-stack **Web App** (FastAPI + React) on Azure App Service, or as a **Hosted Agent** on Microsoft Foundry with Teams / M365 Copilot integration.
 - **Built for developers** — runs locally with a single script, deploys to Azure with one command, and exposes a REST API for pipeline integration.
 
 ### Built with
@@ -217,8 +217,8 @@ cp .env.template .env
 Edit `.env` with your settings:
 
 ```dotenv
-# Azure AI Foundry / OpenAI Configuration
-# Use PROJECT_ENDPOINT for AI Foundry projects, or AZURE_OPENAI_ENDPOINT for Azure OpenAI
+# Microsoft Foundry / OpenAI Configuration
+# Use PROJECT_ENDPOINT for Microsoft Foundry projects, or AZURE_OPENAI_ENDPOINT for Azure OpenAI
 PROJECT_ENDPOINT=https://your-project.services.ai.azure.com/api/projects/your-project
 AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 MODEL_DEPLOYMENT_NAME=gpt-4.1
@@ -434,7 +434,7 @@ For official Microsoft documentation, see [Hosted Agents documentation](https://
 
 ### Model Deployment (Azure OpenAI)
 
-This sample requires a deployed model (GPT-4.1 recommended) on Azure OpenAI or Azure AI Foundry.
+This sample requires a deployed model (GPT-4.1 recommended) on Azure OpenAI or Microsoft Foundry.
 
 #### Option 1: Microsoft Foundry (recommended)
 

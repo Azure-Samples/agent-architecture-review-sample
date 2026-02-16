@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS
-    Deploy the Architecture Review Agent as a Hosted Agent on Azure AI Foundry.
+    Deploy the Architecture Review Agent as a Hosted Agent on Microsoft Foundry.
 
 .DESCRIPTION
-    Provisions the required Azure resources (AI Services account, AI Foundry
+    Provisions the required Azure resources (AI Services account, Microsoft Foundry
     project, model deployment), deploys the hosted agent container via
     Azure Developer CLI (azd), and configures RBAC for the managed identity.
 
@@ -11,7 +11,7 @@
     Name of the Azure resource group.
 
 .PARAMETER ProjectName
-    Name for the AI Foundry project. Defaults to "arch-review".
+    Name for the Microsoft Foundry project. Defaults to "arch-review".
 
 .PARAMETER Location
     Azure region (default: eastus2).
@@ -175,7 +175,7 @@ Write-Host "      --assignee <MANAGED_IDENTITY_PRINCIPAL_ID> ``" -ForegroundColo
 Write-Host "      --role 'Azure AI User' ``" -ForegroundColor White
 Write-Host "      --scope $scope" -ForegroundColor White
 Write-Host ""
-Write-Host "  Find the Principal ID in Azure AI Foundry portal → Hosted Agents → Architecture Review Agent → Details." -ForegroundColor Yellow
+Write-Host "  Find the Principal ID in Microsoft Foundry portal → Hosted Agents → Architecture Review Agent → Details." -ForegroundColor Yellow
 
 # ── Done ─────────────────────────────────────────────────────────────────────
 Write-Host ""
