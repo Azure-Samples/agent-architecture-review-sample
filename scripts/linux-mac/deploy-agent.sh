@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Architecture Review Agent — Deploy Hosted Agent to Azure AI Foundry.
+# Architecture Review Agent — Deploy Hosted Agent to Microsoft Foundry.
 #
 # Provisions Azure AI Services, deploys a model, and deploys the hosted
 # agent container via Azure Developer CLI (azd).
@@ -229,7 +229,7 @@ echo "      --assignee <MANAGED_IDENTITY_PRINCIPAL_ID> \\"
 echo "      --role 'Azure AI User' \\"
 echo "      --scope $SCOPE"
 echo ""
-echo "  Find the Principal ID in Azure AI Foundry portal → Hosted Agents → Architecture Review Agent → Details."
+echo "  Find the Principal ID in Microsoft Foundry portal → Hosted Agents → Architecture Review Agent → Details."
 
 # ── Done ─────────────────────────────────────────────────────────────────────
 echo ""

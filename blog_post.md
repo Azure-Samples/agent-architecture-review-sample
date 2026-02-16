@@ -1,6 +1,6 @@
 # Building an AI Architecture Reviewer with Microsoft Agent Framework & Hosted Agents
 
-*Turn natural-language architecture descriptions into risk reports and interactive diagrams — deployed as a hosted agent on Azure AI Foundry in minutes.*
+*Turn natural-language architecture descriptions into risk reports and interactive diagrams — deployed as a hosted agent on Microsoft Foundry in minutes.*
 
 **Repository:** [github.com/Azure-Samples/agent-architecture-review-sample](https://github.com/Azure-Samples/agent-architecture-review-sample)
 
@@ -12,7 +12,7 @@ You've been there. Someone pastes an architecture sketch into a Slack thread —
 
 Architecture review is **critical** but chronically **under-resourced**. Humans are great at deep analysis, but inconsistent at catching boilerplate risks across dozens of designs. What if you could give every pull request, design doc, or whiteboard photo the same rigorous review — automatically?
 
-That's exactly what the **Architecture Review Agent** sample does. And building it taught us how powerful the [Microsoft Agent Framework](https://github.com/microsoft/agent-framework) and Azure AI Foundry's **Hosted Agents** can be for shipping production AI tools fast.
+That's exactly what the **Architecture Review Agent** sample does. And building it taught us how powerful the [Microsoft Agent Framework](https://github.com/microsoft/agents) and Microsoft Foundry's **Hosted Agents** can be for shipping production AI tools fast.
 
 ---
 
@@ -43,7 +43,7 @@ And it returns a complete architecture review with 10 identified components, ris
 |------|-----------|----------------|
 | **CLI** | Local pipeline runner — no Azure required for structured inputs | Your machine |
 | **Web UI** | React + FastAPI — interactive browser-based review | Your machine (dev) or **Azure App Service** (prod) |
-| **Hosted Agent** | OpenAI Responses-compatible API via Agent Framework | Your machine (dev) or **Azure AI Foundry Agent Service** (prod) |
+| **Hosted Agent** | OpenAI Responses-compatible API via Agent Framework | Your machine (dev) or **Microsoft Foundry Agent Service** (prod) |
 
 For production deployment, the Architecture Review Agent offers **two distinct options** — each with different trade-offs. We'll dive into both later in this post.
 
@@ -60,7 +60,7 @@ The [Microsoft Agent Framework](https://github.com/microsoft/agent-framework) (`
 - **Tool registration** — expose Python functions as agent tools with type annotations
 - **Conversation management** — the framework handles message routing, context windows, and tool-call orchestration
 - **Protocol compliance** — your agent speaks the OpenAI Responses API out of the box
-- **Deployment-ready** — one `agent.yaml` manifest and you're deployable to Azure AI Foundry
+- **Deployment-ready** — one `agent.yaml` manifest and you're deployable to Microsoft Foundry
 
 Here's what our entire agent entry point looks like:
 
@@ -134,12 +134,12 @@ Deploy with one command:
 .\scripts\windows\deploy.ps1 -target webapp -ResourceGroup arch-review-rg -AppName arch-review-web
 ```
 
-### Option B — Hosted Agent (Azure AI Foundry Agent Service)
+### Option B — Hosted Agent (Microsoft Foundry Agent Service)
 
-This is the cloud-native agent approach. Azure AI Foundry's **Hosted Agents** let you deploy your agent as a managed, scalable API without managing infrastructure.
+This is the cloud-native agent approach. Microsoft Foundry's **Hosted Agents** let you deploy your agent as a managed, scalable API without managing infrastructure.
 
 ```
-Clients ──▶ Azure AI Foundry (managed) ──▶ main.py (Agent Framework) ──▶ tools.py ──▶ Azure OpenAI
+Clients ──▶ Microsoft Foundry (managed) ──▶ main.py (Agent Framework) ──▶ tools.py ──▶ Azure OpenAI
 ```
 
 A hosted agent is a container that runs on **Foundry-managed compute**. You define your agent in an `agent.yaml` manifest:
@@ -209,7 +209,7 @@ We built automated deployment scripts that handle the full lifecycle for both op
 # Option A: Deploy the web app to Azure App Service
 .\scripts\windows\deploy.ps1 -target webapp -ResourceGroup arch-review-rg -AppName arch-review-web
 
-# Option B: Deploy the hosted agent to Azure AI Foundry
+# Option B: Deploy the hosted agent to Microsoft Foundry
 .\scripts\windows\deploy.ps1 -target agent -ResourceGroup arch-review-rg -ProjectName arch-review
 
 # Clean up either option
@@ -306,26 +306,26 @@ All three interfaces — CLI, Web App, and Hosted Agent — share the same `tool
 │  smart_parse · analyze_risks · generate_diagram · export_png · ...   │
 └────────────┬────────────────────┬────────────────────┬───────────────┘
              │                    │                    │
-   ┌─────────▼──────────┐  ┌─────▼──────────┐  ┌─────▼──────────┐
-   │  CLI               │  │  Option A       │  │  Option B       │
-   │  run_local.py       │  │  Web App        │  │  Hosted Agent   │
-   │                     │  │                 │  │                 │
-   │  Your machine       │  │  React UI       │  │  main.py        │
-   │  No Azure needed    │  │  + FastAPI      │  │  Agent Framework│
-   │  (structured input) │  │  (api.py)       │  │                 │
-   └─────────────────────┘  │                 │  │  OpenAI         │
-                            │  Custom REST    │  │  Responses API  │
-                            │  /api/review    │  │  /responses     │
-                            │  /api/infer     │  │                 │
-                            │                 │  │  Managed by     │
-                            │  Deploy to:     │  │  Azure AI       │
+   ┌─────────▼───────────┐  ┌─────▼───────────┐  ┌─────▼────────────┐
+   │  CLI                │  │  Option A       │  │  Option B        │
+   │  run_local.py       │  │  Web App        │  │  Hosted Agent    │
+   │                     │  │                 │  │                  │
+   │  Your machine       │  │  React UI       │  │  main.py         │
+   │  No Azure needed    │  │  + FastAPI      │  │  Agent Framework │
+   │  (structured input) │  │  (api.py)       │  │                  │
+   └─────────────────────┘  │                 │  │  OpenAI          │
+                            │  Custom REST    │  │  Responses API   │
+                            │  /api/review    │  │  /responses      │
+                            │  /api/infer     │  │                  │
+                            │                 │  │  Managed by      │
+                            │  Deploy to:     │  │  Microsoft       │
                             │  App Service    │  │  Foundry         │
-                            │  + ACR          │  │                 │
-                            │                 │  │  Auto-scaling   │
+                            │  + ACR          │  │                  │
+                            │                 │  │  Auto-scaling    │
                             │  You manage:    │  │  Managed identity│
-                            │  Scaling, auth, │  │  Conversations  │
-                            │  infra          │  │  Teams / Copilot│
-                            └─────────────────┘  └─────────────────┘
+                            │  Scaling, auth, │  │  Conversations   │
+                            │  infra          │  │  Teams / Copilot │
+                            └─────────────────┘  └──────────────────┘
 ```
 
 ---
@@ -363,7 +363,7 @@ Best if you want a **custom UI** and full control over your API surface.
 
 Builds the Docker image via ACR Tasks, provisions App Service, and configures everything from your `.env` file. Your team gets a browser-based architecture review tool with interactive Excalidraw diagrams.
 
-#### Option B — Deploy as a Hosted Agent on Azure AI Foundry
+#### Option B — Deploy as a Hosted Agent on Microsoft Foundry
 
 Best if you want a **managed, scalable API** with zero infrastructure overhead and channel publishing.
 
@@ -437,12 +437,13 @@ The Microsoft Agent Framework makes building production AI agents surprisingly s
 
 ## Resources
 
-- [Microsoft Agent Framework](https://github.com/microsoft/agent-framework) — the framework powering the Architecture Review Agent
-- [Azure AI Foundry Hosted Agents](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/concepts/hosted-agents) — managed agent deployment
+- [Microsoft Agent Framework](https://github.com/microsoft/agents) — the framework powering the Architecture Review Agent
+- [Microsoft Foundry Hosted Agents](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/concepts/hosted-agents) — managed agent deployment
 - [Azure Developer CLI (azd)](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/) — infrastructure-as-code deployment
 - [Excalidraw MCP Server](https://github.com/excalidraw/excalidraw-mcp) — interactive diagram rendering
 - [Architecture Review Agent Deployment Guide](deployment.md) — detailed RBAC and deployment walkthrough
+- [Microsoft Foundry](https://ai.azure.com) - Microsoft Foundry is a unified platform designed for building, deploying, and managing AI applications and agents, integrating seamlessly with Azure services and tools. 
 
 ---
 
-*Built with the Microsoft Agent Framework. Deployed on Azure AI Foundry. Diagrams powered by Excalidraw.*
+*Built with the Microsoft Agent Framework. Deployed on Microsoft Foundry. Diagrams powered by Excalidraw.*

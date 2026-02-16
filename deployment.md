@@ -1,6 +1,6 @@
 # Architecture Review Agent — Hosted Agent Deployment
 
-Deploy the Architecture Review Agent as a **hosted agent** on Azure AI Foundry using the
+Deploy the Architecture Review Agent as a **hosted agent** on Microsoft Foundry using the
 VS Code Foundry extension. No local Docker installation required.
 
 ---

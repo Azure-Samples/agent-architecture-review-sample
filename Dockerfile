@@ -1,4 +1,4 @@
-# Architecture Review Agent — Hosted Agent for Azure AI Foundry
+# Architecture Review Agent — Hosted Agent for Microsoft Foundry
 # Build: docker build --platform linux/amd64 -t arch-review:v1 .
 FROM python:3.12-slim
 
