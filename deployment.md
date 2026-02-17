@@ -42,7 +42,6 @@ The VS Code Foundry extension provides the most stable and straightforward deplo
    - Agent name and description
    - Model deployment reference
    - Environment variables
-   - CPU and memory allocation
 6. **Wait for the deployment** - the extension will:
    - Package your source code
    - Upload to **Azure Container Registry (ACR)**

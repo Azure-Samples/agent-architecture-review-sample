@@ -50,7 +50,7 @@ agent-architecture-review-sample/
 | `main.py` | Hosted agent entry point — registers tools with Microsoft Agent Framework, defines agent instructions | Changing agent behaviour, adding/removing tools, modifying system prompt |
 | `api.py` | FastAPI REST API — exposes review pipeline as HTTP endpoints, serves React frontend in production | Adding/modifying API endpoints, changing request validation, CORS config |
 | `run_local.py` | CLI test runner — runs the full pipeline locally with Rich console output | Improving CLI experience, adding CLI flags |
-| `agent.yaml` | Foundry deployment manifest — defines agent name, model, resources, environment variables | Changing deployment config, model, resource allocation |
+| `agent.yaml` | Foundry deployment manifest — defines agent name, model, protocols, environment variables | Changing deployment config, model, environment variables |
 | `requirements.txt` | Python dependencies — pinned versions | Adding/updating dependencies |
 
 ---
@@ -75,7 +75,7 @@ Input (any format) → smart_parse() → [rule-based OR LLM fallback]
 ### Two Deployment Paths
 
 - **Option A — Web App**: `api.py` (FastAPI) + `frontend/` (React). Deployed to Azure App Service via `Dockerfile.web`.
-- **Option B — Hosted Agent**: `main.py` (Agent Framework). Deployed to Microsoft Foundry via `Dockerfile` and VS Code Foundry extension.
+- **Option B — Hosted Agent**: `main.py` (Agent Framework). Deployed to Microsoft Foundry via `Dockerfile` and VS Code Foundry extension (v2 hosted agent services).
 
 Both share the same core engine in `tools.py`.
 
@@ -84,7 +84,7 @@ Both share the same core engine in `tools.py`.
 ## Technology Stack
 
 - **Python 3.11+**
-- **Microsoft Agent Framework** (`azure-ai-agentserver-agentframework`) — hosted agent runtime
+- **Microsoft Agent Framework** (`azure-ai-agentserver-agentframework` v1.0.0b12) — hosted agent runtime (v2 hosted agent services)
 - **Azure OpenAI** (GPT-4.1) — LLM backend via `AzureOpenAIChatClient`
 - **FastAPI** + **Uvicorn** — REST API
 - **React** + **Vite** — frontend UI
