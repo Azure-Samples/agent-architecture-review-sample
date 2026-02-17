@@ -1,0 +1,189 @@
+# Banking Microservices with Event Sourcing
+# ============================================
+# Financial services architecture using event sourcing and CQRS patterns.
+# Demonstrates complex connectivity, compliance needs, and high-availability
+# requirements for critical transaction processing.
+
+components:
+  - name: API Gateway
+    type: gateway
+    technology: Kong Enterprise
+    replicas: 3
+    description: External API gateway with OAuth2, rate limiting, and mTLS
+
+  - name: Internal Gateway
+    type: gateway
+    technology: Envoy Service Mesh
+    replicas: 3
+    description: Internal east-west traffic management with circuit breakers
+
+  - name: Account Service
+    type: service
+    technology: Java Spring Boot
+    replicas: 3
+    description: Account creation, KYC verification, and balance queries
+
+  - name: Transaction Service
+    type: service
+    technology: Java Spring Boot
+    replicas: 4
+    description: Real-time transaction processing with ACID guarantees
+
+  - name: Fraud Detection Engine
+    type: service
+    technology: Python + ML model
+    replicas: 3
+    description: Real-time fraud scoring using ML inference on transaction streams
+
+  - name: Loan Origination Service
+    type: service
+    technology: .NET 8 Web API
+    replicas: 2
+    description: Loan applications, credit scoring, and approval workflows
+
+  - name: Reporting Service
+    type: service
+    technology: Python FastAPI
+    replicas: 2
+    description: Regulatory reports, account statements, and analytics queries
+
+  - name: Notification Hub
+    type: service
+    technology: Node.js
+    replicas: 2
+    description: Multi-channel alerts (SMS, push, email) for transactions
+
+  - name: Event Store
+    type: database
+    technology: EventStoreDB
+    replicas: 3
+    description: Immutable event log for all domain events (event sourcing)
+
+  - name: Account Database
+    type: database
+    technology: CockroachDB
+    replicas: 3
+    description: Distributed SQL for account read models (CQRS read side)
+
+  - name: Transaction Ledger
+    type: database
+    technology: CockroachDB
+    replicas: 3
+    description: Double-entry ledger with global strong consistency
+
+  - name: Analytics Warehouse
+    type: database
+    technology: Snowflake
+    replicas: 1
+    description: Historical data warehouse for BI and regulatory reporting
+
+  - name: Event Bus
+    type: queue
+    technology: Apache Kafka
+    replicas: 5
+    description: High-throughput event streaming backbone
+
+  - name: Redis Cache
+    type: cache
+    technology: Redis Sentinel
+    replicas: 3
+    description: Session management, rate limiting, and balance caching
+
+  - name: Vault
+    type: service
+    technology: HashiCorp Vault
+    replicas: 3
+    description: Secret management, encryption keys, and PKI
+
+connections:
+  - from: API Gateway
+    to: Internal Gateway
+    protocol: mTLS
+
+  - from: Internal Gateway
+    to: Account Service
+    protocol: gRPC
+
+  - from: Internal Gateway
+    to: Transaction Service
+    protocol: gRPC
+
+  - from: Internal Gateway
+    to: Loan Origination Service
+    protocol: gRPC
+
+  - from: Account Service
+    to: Account Database
+    protocol: PostgreSQL wire
+
+  - from: Account Service
+    to: Redis Cache
+    protocol: TCP/TLS
+
+  - from: Account Service
+    to: Event Bus
+    protocol: Kafka
+    description: Account lifecycle events
+
+  - from: Transaction Service
+    to: Transaction Ledger
+    protocol: PostgreSQL wire
+
+  - from: Transaction Service
+    to: Event Store
+    protocol: gRPC
+    description: Transaction events (event sourcing)
+
+  - from: Transaction Service
+    to: Event Bus
+    protocol: Kafka
+    description: Transaction stream for downstream consumers
+
+  - from: Transaction Service
+    to: Fraud Detection Engine
+    protocol: gRPC
+    description: Real-time fraud check before commit
+
+  - from: Fraud Detection Engine
+    to: Redis Cache
+    protocol: TCP/TLS
+    description: Feature store and velocity counters
+
+  - from: Fraud Detection Engine
+    to: Event Bus
+    protocol: Kafka
+    description: Fraud alerts and model feedback
+
+  - from: Event Bus
+    to: Notification Hub
+    protocol: Kafka
+    description: Transaction and alert notifications
+
+  - from: Event Bus
+    to: Reporting Service
+    protocol: Kafka
+    description: Event projections for reporting
+
+  - from: Reporting Service
+    to: Analytics Warehouse
+    protocol: HTTPS/SQL
+    description: Materialized views and batch loads
+
+  - from: Loan Origination Service
+    to: Account Database
+    protocol: PostgreSQL wire
+
+  - from: Loan Origination Service
+    to: Event Bus
+    protocol: Kafka
+    description: Loan application events
+
+  - from: Vault
+    to: Transaction Service
+    protocol: HTTPS
+    description: Encryption keys for PCI data
+
+  - from: Vault
+    to: Account Service
+    protocol: HTTPS
+    description: KYC data encryption keys
