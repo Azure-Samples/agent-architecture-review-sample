@@ -1,0 +1,91 @@
+# Startup MVP - AI-Powered Content Platform
+# =============================================
+# Typical early-stage startup architecture with common shortcuts:
+# single-replica databases, no caching, monolithic tendencies.
+# Great for demonstrating risk detection and improvement recommendations.
+
+components:
+  - name: Cloudflare CDN
+    type: cdn
+    technology: Cloudflare
+    description: DNS, DDoS protection, and static asset caching
+
+  - name: Next.js App
+    type: service
+    technology: Next.js on Vercel
+    replicas: 1
+    description: SSR frontend and API routes (monolithic)
+
+  - name: AI Pipeline
+    type: service
+    technology: Python FastAPI
+    replicas: 1
+    description: Content generation, summarisation, and embedding via OpenAI
+
+  - name: Main Database
+    type: database
+    technology: PostgreSQL (single instance)
+    replicas: 1
+    description: Users, content, subscriptions, and analytics - all in one DB
+
+  - name: Vector Store
+    type: database
+    technology: Pinecone
+    replicas: 1
+    description: Semantic search embeddings for content discovery
+
+  - name: Object Storage
+    type: storage
+    technology: AWS S3
+    replicas: 1
+    description: User-uploaded media and generated content assets
+
+  - name: Stripe Webhook Handler
+    type: service
+    technology: Next.js API Route
+    replicas: 1
+    description: Payment processing and subscription management
+
+  - name: Background Worker
+    type: service
+    technology: Python Celery + Redis
+    replicas: 1
+    description: Queued jobs for AI generation, email sends, and analytics
+
+connections:
+  - from: Cloudflare CDN
+    to: Next.js App
+    protocol: HTTPS
+
+  - from: Next.js App
+    to: Main Database
+    protocol: TCP
+
+  - from: Next.js App
+    to: AI Pipeline
+    protocol: REST
+
+  - from: Next.js App
+    to: Object Storage
+    protocol: HTTPS
+
+  - from: AI Pipeline
+    to: Main Database
+    protocol: TCP
+
+  - from: AI Pipeline
+    to: Vector Store
+    protocol: HTTPS
+
+  - from: Stripe Webhook Handler
+    to: Main Database
+    protocol: TCP
+
+  - from: Background Worker
+    to: Main Database
+    protocol: TCP
+
+  - from: Background Worker
+    to: AI Pipeline
+    protocol: REST
+    description: Queued content generation requests

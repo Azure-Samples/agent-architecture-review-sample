@@ -1,0 +1,163 @@
+# Healthcare Patient Portal Architecture
+# ========================================
+# Multi-tier healthcare platform with HIPAA compliance requirements.
+# Demonstrates risk detection for sensitive data handling, single points
+# of failure, and missing encryption.
+
+components:
+  - name: Web Portal
+    type: gateway
+    technology: Azure Front Door + WAF
+    replicas: 2
+    description: Patient-facing web application entry point
+
+  - name: Mobile BFF
+    type: gateway
+    technology: Azure API Management
+    replicas: 2
+    description: Backend-for-frontend serving iOS and Android apps
+
+  - name: Identity Provider
+    type: service
+    technology: Azure AD B2C
+    replicas: 2
+    description: Patient and clinician authentication with MFA
+
+  - name: Patient Service
+    type: service
+    technology: .NET 8 Web API
+    replicas: 3
+    description: Patient demographics, consent management, and profile CRUD
+
+  - name: Appointment Service
+    type: service
+    technology: .NET 8 Web API
+    replicas: 2
+    description: Scheduling, availability, and appointment lifecycle
+
+  - name: Clinical Records Service
+    type: service
+    technology: Python FastAPI
+    replicas: 2
+    description: EHR data access, lab results, and clinical notes
+
+  - name: Prescription Service
+    type: service
+    technology: Java Spring Boot
+    replicas: 1
+    description: E-prescribing and pharmacy integration
+
+  - name: Notification Engine
+    type: service
+    technology: Azure Functions
+    replicas: 1
+    description: Appointment reminders, lab result alerts, and secure messages
+
+  - name: Patient Database
+    type: database
+    technology: Azure SQL (Hyperscale)
+    replicas: 2
+    description: Patient demographics and consent records
+
+  - name: Clinical Database
+    type: database
+    technology: Azure Cosmos DB
+    replicas: 3
+    description: Clinical records, lab results, and notes (multi-region)
+
+  - name: Audit Log Store
+    type: database
+    technology: Azure Table Storage
+    replicas: 1
+    description: HIPAA audit trail for all data access events
+
+  - name: Document Vault
+    type: storage
+    technology: Azure Blob Storage (encrypted)
+    replicas: 1
+    description: Scanned documents, imaging files, and consent forms
+
+  - name: Event Bus
+    type: queue
+    technology: Azure Service Bus
+    replicas: 2
+    description: Async messaging for appointment events and notifications
+
+  - name: Redis Cache
+    type: cache
+    technology: Azure Cache for Redis
+    replicas: 2
+    description: Session tokens and frequently accessed patient summaries
+
+connections:
+  - from: Web Portal
+    to: Identity Provider
+    protocol: HTTPS/OAuth2
+
+  - from: Mobile BFF
+    to: Identity Provider
+    protocol: HTTPS/OAuth2
+
+  - from: Web Portal
+    to: Patient Service
+    protocol: HTTPS
+
+  - from: Web Portal
+    to: Appointment Service
+    protocol: HTTPS
+
+  - from: Web Portal
+    to: Clinical Records Service
+    protocol: HTTPS
+
+  - from: Mobile BFF
+    to: Patient Service
+    protocol: HTTPS
+
+  - from: Mobile BFF
+    to: Appointment Service
+    protocol: HTTPS
+
+  - from: Patient Service
+    to: Patient Database
+    protocol: TDS/TLS
+
+  - from: Patient Service
+    to: Redis Cache
+    protocol: TCP/TLS
+
+  - from: Clinical Records Service
+    to: Clinical Database
+    protocol: HTTPS
+
+  - from: Clinical Records Service
+    to: Document Vault
+    protocol: HTTPS
+
+  - from: Prescription Service
+    to: Clinical Database
+    protocol: HTTPS
+
+  - from: Appointment Service
+    to: Patient Database
+    protocol: TDS/TLS
+
+  - from: Appointment Service
+    to: Event Bus
+    protocol: AMQP
+    description: Appointment created/cancelled/rescheduled events
+
+  - from: Event Bus
+    to: Notification Engine
+    protocol: AMQP
+    description: Triggers reminders and alerts
+
+  - from: Patient Service
+    to: Audit Log Store
+    protocol: HTTPS
+    description: Logs all PHI access
+
+  - from: Clinical Records Service
+    to: Audit Log Store
+    protocol: HTTPS
+    description: Logs all clinical data access

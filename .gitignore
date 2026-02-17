@@ -18,6 +18,9 @@ venv/
 # Local output & dev artefacts
 output/
 
+# Playwright MCP
+.playwright-mcp/
+
 # Node / Frontend
 node_modules/
 frontend/dist/
