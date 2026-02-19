@@ -221,7 +221,7 @@ If you prefer to set things up manually:
 
 ```bash
 # Clone the repository
-git clone <repo-url>
+git clone https://github.com/Azure-Samples/agent-architecture-review-sample
 cd agent-architecture-review-sample
 
 # Create virtual environment
@@ -675,7 +675,7 @@ When types aren't explicitly set, the Architecture Review Agent infers them from
 
 ---
 
-## Maintainer
+## Maintainer (Microsoft MVP)
 
 <table>
 <tr>
@@ -691,4 +691,4 @@ When types aren't explicitly set, the Architecture Review Agent infers them from
 
 ## License
 
-MIT
+[MIT](LICENSE)
