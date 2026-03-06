@@ -18,7 +18,10 @@
     "react-dom": "^18.3.1"
   },
   "overrides": {
-    "nanoid": "$nanoid"
+    "nanoid": "$nanoid",
+    "rollup": "4.59.0",
+    "immutable": "4.3.8",
+    "dompurify": "3.3.2"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^5.1.4",
