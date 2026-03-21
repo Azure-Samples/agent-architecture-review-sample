@@ -79,6 +79,6 @@ python run_local.py --text "API Gateway -> Auth Service -> User DB"
 ## 📚 Learn More
 
 - [README.md](../README.md) - Project overview & all deployment options
-- [deployment.md](../deployment.md) - Hosted agent deployment guide (Microsoft Foundry)
+- [deployment.md](../docs/deployment.md) - Hosted agent deployment guide (Microsoft Foundry)
 - [windows/README.md](windows/README.md) - Windows scripts detailed reference
 - [linux-mac/README.md](linux-mac/README.md) - Linux/macOS scripts detailed reference

@@ -23,7 +23,7 @@ agent-architecture-review-sample/
 ├── pyproject.toml       # Pytest configuration
 ├── Dockerfile           # Container for hosted agent deployment
 ├── Dockerfile.web       # Container for web app deployment (FastAPI + React)
-├── deployment.md        # Step-by-step deployment & RBAC guide
+├── docs/deployment.md   # Step-by-step deployment & RBAC guide
 ├── frontend/            # React UI (Vite + Excalidraw)
 │   ├── src/App.jsx      # Main React app with input, tabs, results
 │   ├── src/api.js       # API client — calls FastAPI backend
@@ -268,4 +268,4 @@ pytest -v --tb=short        # Verbose output (configured in pyproject.toml)
 - **Web App → Azure App Service**: `.\scripts\windows\deploy-webapp.ps1 -ResourceGroup <rg> -AppName <name>`
 - **Hosted Agent → Microsoft Foundry**: VS Code Foundry extension → `Microsoft Foundry: Deploy Hosted Agent`
 - **Teardown**: `.\scripts\windows\teardown.ps1 -ResourceGroup <rg>`
-- Full deployment guide: `deployment.md`
+- Full deployment guide: `docs/deployment.md`
