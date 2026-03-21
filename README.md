@@ -6,6 +6,8 @@
 
 The Architecture Review Agent is an open-source AI agent sample that **reviews software architectures and generates interactive diagrams** - automatically. Feed it any architectural description (YAML, Markdown, plain text, code, design docs) and it returns a structured review with risk analysis, actionable recommendations, and an [Excalidraw](https://excalidraw.com/) diagram you can edit and share.
 
+For a structured docs map (setup, deployment, scripts, scenarios, testing), see [docs/README.md](docs/README.md).
+
 ## Architecture
 
 ![Architecture Overview](screenshots/architecture_overview.png)
@@ -113,7 +115,7 @@ A **managed agent** deployed to Microsoft Foundry's Hosted Agent infrastructure 
 
 **Best for:** Teams that want a **managed, scalable API** with zero infrastructure overhead, or need to publish the agent to **Teams / M365 Copilot** channels. The extension-based deployment flow is more reliable than script-based approaches and provides real-time feedback.
 
-**Key files:** [main.py](main.py) · [agent.yaml](agent.yaml) · [Dockerfile](Dockerfile) · [deployment.md](deployment.md)
+**Key files:** [main.py](main.py) · [agent.yaml](agent.yaml) · [Dockerfile](Dockerfile) · [docs/deployment.md](docs/deployment.md)
 
 ### Comparison
 
@@ -148,7 +150,7 @@ agent-architecture-review-sample/
 ├── requirements.txt     # Python dependencies (pinned versions)
 ├── Dockerfile           # Container deployment (hosted agent)
 ├── Dockerfile.web       # Container deployment (web app - FastAPI + React)
-├── deployment.md        # Step-by-step deployment & RBAC guide
+├── docs/deployment.md   # Step-by-step deployment & RBAC guide
 ├── .env.template        # Environment variable template
 ├── scripts/             # All automation scripts organized by OS
 │   ├── README.md           # Script usage guide
@@ -400,6 +402,8 @@ python main.py
 # → Architecture Review Agent Server running on http://localhost:8088
 ```
 
+For the `azd`-based local hosted-agent workflow (`azd ai agent run` + `azd ai agent invoke --local`), see [docs/azd-local.md](docs/azd-local.md).
+
 Test with a curl / PowerShell request:
 
 ```powershell
@@ -424,7 +428,7 @@ The **VS Code Foundry extension** provides the most stable and straightforward d
 3. Select your Foundry workspace and follow the prompts
 4. The extension handles ACR build, container deployment, and managed identity assignment automatically
 
-See [deployment.md](deployment.md) for the complete step-by-step guide with screenshots and RBAC configuration.
+See [docs/deployment.md](docs/deployment.md) for the complete step-by-step guide with screenshots and RBAC configuration.
 
 #### What Microsoft Foundry Provides
 
@@ -457,7 +461,7 @@ Invoke-RestMethod `
 ```
 
 > [!IMPORTANT]
-> For the full deployment guide including RBAC setup, VS Code Foundry Extension workflow, and troubleshooting, see [deployment.md](deployment.md).
+> For the full deployment guide including RBAC setup, VS Code Foundry Extension workflow, and troubleshooting, see [docs/deployment.md](docs/deployment.md).
 
 For official Microsoft documentation, see [Hosted Agents documentation](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/concepts/hosted-agents?view=foundry&tabs=cli).
 

@@ -50,7 +50,7 @@ The VS Code Foundry extension provides the most stable and straightforward deplo
    - Assign a system-managed identity to the container
 7. **Verify success** - the agent appears under **Hosted Agents (Preview)** in the Foundry extension tree view
 
-![Extension Deployment Flow](docs/extension-deployment.png)
+![Architecture Overview](../screenshots/architecture_overview.png)
 
 > **What happens behind the scenes:**
 > - The extension creates an ACR build task with your Dockerfile

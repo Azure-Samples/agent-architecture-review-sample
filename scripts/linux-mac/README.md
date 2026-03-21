@@ -319,7 +319,7 @@ bash scripts/linux-mac/teardown.sh
 
 - [../README.md](../README.md) - Scripts overview & quick reference
 - [../../README.md](../../README.md) - Full repository guide
-- [../../deployment.md](../../deployment.md) - Hosted agent deployment (VS Code Foundry extension)
+- [../../docs/deployment.md](../../docs/deployment.md) - Hosted agent deployment (VS Code Foundry extension)
 - [../../run_local.py](../../run_local.py) - CLI testing alternative
 
 ---

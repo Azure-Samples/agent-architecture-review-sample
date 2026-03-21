@@ -1,49 +1,14 @@
-name: Architecture Review Agent
-description: >
-  AI-powered Architecture Reviewer and Diagram Generator agent.
-  Analyzes architectural descriptions (YAML, Markdown, plaintext),
-  identifies risks (SPOF, scalability, security, anti-patterns),
-  generates Excalidraw diagrams via MCP, exports PNG, and produces
-  structured review reports with prioritised recommendations.
-
-metadata:
-  example:
-    - role: user
-      content: |-
-        Review this architecture:
-        Client -> API Gateway -> Auth Service
-        API Gateway -> Product Service -> PostgreSQL
-        API Gateway -> Order Service -> PostgreSQL
-        Order Service -> Payment Gateway
-  tags:
-    - Architecture Review
-    - Diagram Generation
-    - Risk Detection
-    - Excalidraw MCP
-    - Azure AI AgentServer
-    - Microsoft Agent Framework
-    - Local Tools
-  authors:
-    - ShivamGoyal03
-
-template:
-  name: Architecture Review Agent
-  kind: hosted
-  protocols:
+kind: hosted
+author:
+    name: ShivamGoyal03
+name: agent-architecture-review-sample
+protocols:
     - protocol: responses
-  environment_variables:
-    - name: PROJECT_ENDPOINT
+      version: v1
+environment_variables:
+    - name: AZURE_OPENAI_ENDPOINT
+      value: ${AZURE_OPENAI_ENDPOINT}
+    - name: AZURE_AI_PROJECT_ENDPOINT
       value: ${AZURE_AI_PROJECT_ENDPOINT}
-    - name: MODEL_DEPLOYMENT_NAME
-      value: "{{chat}}"
-    # Optional: Foundry MCP connection for Excalidraw rendering in deployment
-    # - name: AZURE_AI_PROJECT_TOOL_CONNECTION_ID
-    #   value: ${AZURE_AI_PROJECT_TOOL_CONNECTION_ID}
-    # Set to "1" if behind a corporate proxy with SSL certificate issues
-    # - name: ARCH_REVIEW_NO_SSL_VERIFY
-    #   value: "1"
-
-resources:
-  - kind: model
-    id: gpt-4.1
-    name: chat
+    - name: AZURE_AI_MODEL_DEPLOYMENT_NAME
+      value: ${AZURE_AI_MODEL_DEPLOYMENT_NAME}

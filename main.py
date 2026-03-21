@@ -11,7 +11,7 @@ from typing import Annotated
 
 from dotenv import load_dotenv
 
-load_dotenv(override=True)
+load_dotenv(override=False)
 
 from agent_framework.azure import AzureAIAgentClient
 from azure.ai.agentserver.agentframework import from_agent_framework
@@ -30,9 +30,15 @@ from tools import (
     build_review_report,
 )
 
-PROJECT_ENDPOINT = os.getenv("PROJECT_ENDPOINT") or os.getenv("AZURE_OPENAI_ENDPOINT")
-MODEL_DEPLOYMENT_NAME = os.getenv("MODEL_DEPLOYMENT_NAME") or os.getenv(
-    "AZURE_AI_MODEL_DEPLOYMENT_NAME", "gpt-4.1"
+PROJECT_ENDPOINT = (
+    os.getenv("AZURE_AI_PROJECT_ENDPOINT")
+    or os.getenv("AZURE_AIPROJECT_ENDPOINT")
+    or os.getenv("PROJECT_ENDPOINT")
+)
+MODEL_DEPLOYMENT_NAME = (
+    os.getenv("AZURE_AI_MODEL_DEPLOYMENT_NAME")
+    or os.getenv("MODEL_DEPLOYMENT_NAME")
+    or "gpt-4.1"
 )
 
 
@@ -139,6 +145,12 @@ insights, visual diagrams, and actionable recommendations.
 
 async def main():
     """Start the Architecture Review Agent hosted agent server."""
+    if not PROJECT_ENDPOINT:
+        raise RuntimeError(
+            "Missing AI Foundry project endpoint. Set AZURE_AI_PROJECT_ENDPOINT "
+            "(preferred for azd) or PROJECT_ENDPOINT in your environment."
+        )
+
     async with (
         DefaultAzureCredential() as credential,
         AzureAIAgentClient(

@@ -35,3 +35,7 @@ frontend/dist/
 *.swp
 .DS_Store
 Thumbs.db
+
+*cache*
+infra/*
+.azure
