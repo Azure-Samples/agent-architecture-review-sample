@@ -1,6 +1,15 @@
 # Architecture Review Agent Sample
 
 [![TechCommunity Article](https://img.shields.io/badge/TechCommunity-Article-0078D4?logo=microsoft&logoColor=white)](https://techcommunity.microsoft.com/blog/educatordeveloperblog/stop-drawing-architecture-diagrams-manually-meet-the-open-source-ai-architecture/4496271)
+[![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115%2B-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![AZD Supported](https://img.shields.io/badge/AZD-Supported-0078D4?logo=microsoftazure&logoColor=white)](https://learn.microsoft.com/azure/developer/azure-developer-cli/)
+[![Microsoft Agent Framework](https://img.shields.io/badge/Microsoft%20Agent%20Framework-v1.0.0b12-5E5ADB?logo=microsoft&logoColor=white)](https://github.com/microsoft/agents)
+[![Hosted Agents](https://img.shields.io/badge/Hosted%20Agents-Enabled-5E5ADB?logo=microsoft&logoColor=white)](https://learn.microsoft.com/azure/ai-foundry/agents/concepts/hosted-agents/)
+[![Microsoft Foundry](https://img.shields.io/badge/Microsoft%20Foundry-Agent%20Service-0078D4?logo=microsoft&logoColor=white)](https://ai.azure.com/)
+[![Azure OpenAI](https://img.shields.io/badge/Azure%20OpenAI-GPT--4.1-0078D4?logo=microsoftazure&logoColor=white)](https://learn.microsoft.com/azure/ai-services/openai/)
+[![Excalidraw MCP](https://img.shields.io/badge/Excalidraw-MCP%20Diagrams-6965DB?logo=excalidraw&logoColor=white)](https://github.com/excalidraw/excalidraw-mcp)
+[![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 
 ## What is the Architecture Review Agent?
 
@@ -45,15 +54,6 @@ flowchart TB
 - **Interactive diagrams** - auto-generated Excalidraw diagrams render components, connections, and data flows. Edit them in-browser or export to PNG.
 - **Two deployment options** - run as a full-stack **Web App** (FastAPI + React) on Azure App Service, or as a **Hosted Agent** on Microsoft Foundry with Teams / M365 Copilot integration.
 - **Built for developers** - runs locally with a single script, deploys to Azure with one command, and exposes a REST API for pipeline integration.
-
-### Built with
-
-| | |
-|---|---|
-| [Microsoft Agent Framework](https://github.com/microsoft/agents) | Hosted agent runtime for the Microsoft Foundry deployment path |
-| [Excalidraw MCP Server](https://github.com/excalidraw/excalidraw-mcp) | Interactive diagram rendering via Model Context Protocol |
-| [Azure OpenAI (GPT-4.1)](https://learn.microsoft.com/azure/ai-services/openai/) | LLM backend for architecture inference & risk analysis |
-| [FastAPI](https://fastapi.tiangolo.com/) + [React](https://react.dev/) | Full-stack web app deployment path |
 
 ---
 
@@ -135,53 +135,6 @@ A **managed agent** deployed to Microsoft Foundry's Hosted Agent infrastructure 
 | **Teardown** | `.\scripts\windows\teardown.ps1 -ResourceGroup <rg>` | Via Foundry portal |
 
 > **Tip:** You can run both simultaneously use the Web App for your internal team's browser-based reviews, and the Hosted Agent for API consumers and Teams/Copilot integration.
-
----
-
-## Project Structure
-
-```
-agent-architecture-review-sample/
-├── main.py              # Hosted agent entry point (Microsoft Agent Framework)
-├── api.py               # FastAPI backend (REST API for the web UI)
-├── tools.py             # All tool logic (parser, risk detector, diagram renderer, MCP client, PNG export)
-├── run_local.py         # CLI runner for local testing (no Azure required)
-├── agent.yaml           # Foundry hosted agent deployment manifest
-├── requirements.txt     # Python dependencies (pinned versions)
-├── Dockerfile           # Container deployment (hosted agent)
-├── Dockerfile.web       # Container deployment (web app - FastAPI + React)
-├── docs/deployment.md   # Step-by-step deployment & RBAC guide
-├── .env.template        # Environment variable template
-├── scripts/             # All automation scripts organized by OS
-│   ├── README.md           # Script usage guide
-│   ├── windows/            # PowerShell scripts for Windows
-│   │   ├── setup.ps1       # One-click setup (Windows)
-│   │   ├── dev.ps1         # Start dev servers (Windows)
-│   │   ├── deploy-webapp.ps1  # Deploy web app to App Service
-│   │   └── teardown.ps1    # Delete all Azure resources
-│   └── linux-mac/          # Bash scripts for Linux/macOS
-│       ├── setup.sh        # One-click setup (Unix)
-│       ├── dev.sh          # Start dev servers (Unix)
-│       ├── deploy-webapp.sh   # Deploy web app to App Service
-│       └── teardown.sh     # Delete all Azure resources
-├── frontend/            # React UI (Vite + Excalidraw)
-│   ├── src/
-│   │   ├── App.jsx      # Main app with input, tabs, and results
-│   │   ├── api.js       # API client
-│   │   └── components/  # Summary, RiskTable, ComponentMap, DiagramViewer, Recommendations
-│   ├── vite.config.js   # Vite config with API proxy
-│   └── package.json
-├── scenarios/
-│   ├── ecommerce.yaml          # Sample: 12-component e-commerce microservices
-│   ├── event_driven.md         # Sample: 8-component event-driven IoT pipeline
-│   ├── microservices_banking.yaml  # Sample: microservices banking architecture
-│   ├── healthcare_platform.yaml    # Sample: healthcare platform
-│   └── startup_mvp.yaml            # Sample: startup MVP
-└── output/              # Generated outputs (auto-created)
-    ├── architecture.excalidraw
-    ├── architecture.png
-    └── review_bundle.json
-```
 
 ---
 
@@ -316,154 +269,7 @@ python run_local.py --text "We have a React frontend, Kong gateway, three micros
 - `architecture.png` - High-resolution PNG diagram
 - `review_bundle.json` - Full structured review report (JSON)
 
-### Option A - Web App (React + FastAPI)
-
-The Architecture Review Agent includes a full-stack web interface with an interactive Excalidraw diagram viewer, risk tables, and component maps. See [Two Deployment Options](#two-deployment-options) for a comparison with Option B.
-
-#### Quick Start (PowerShell)
-
-```powershell
-.\scripts\windows\dev.ps1
-```
-
-This starts the FastAPI backend on port **8000** and the Vite dev server on port **5173**.
-Open [http://localhost:5173](http://localhost:5173) in your browser.
-
-#### Manual Start
-
-```bash
-# Terminal 1 - Backend
-python -m uvicorn api:app --reload --port 8000
-
-# Terminal 2 - Frontend
-cd frontend
-npm install        # first time only
-npx vite --port 5173
-```
-
-#### Docker (combined build)
-
-```bash
-docker build -f Dockerfile.web -t arch-review-web .
-docker run -p 8000:8000 --env-file .env arch-review-web
-```
-
-Open [http://localhost:8000](http://localhost:8000) - the container serves both the API and the React UI.
-
-#### Deploy to Azure App Service
-
-Automated deployment scripts handle resource provisioning, container build, and configuration:
-
-**PowerShell:**
-```powershell
-.\scripts\windows\deploy-webapp.ps1 -ResourceGroup arch-review-rg -AppName arch-review-web
-```
-
-**Bash:**
-```bash
-bash scripts/linux-mac/deploy-webapp.sh --resource-group arch-review-rg --app-name arch-review-web
-```
-
-The scripts create an Azure Container Registry, build the image via ACR Tasks,
-provision an App Service Plan + Web App with managed identity, and configure
-app settings from your `.env` file.
-
-To tear down all resources:
-
-**PowerShell:**
-```powershell
-.\scripts\windows\teardown.ps1 -ResourceGroup arch-review-rg
-```
-
-**Bash:**
-```bash
-bash scripts/linux-mac/teardown.sh --resource-group arch-review-rg
-```
-
-#### API Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/api/review` | Submit architecture text for full review |
-| `POST` | `/api/review/upload` | Upload a YAML/MD/TXT file |
-| `POST` | `/api/infer` | Force LLM inference on free-form text |
-| `GET`  | `/api/download/png/{run_id}` | Download PNG diagram |
-| `GET`  | `/api/download/excalidraw/{run_id}` | Download Excalidraw JSON |
-| `GET`  | `/api/health` | Health check |
-
-### Option B - Hosted Agent (Microsoft Foundry Agent Service)
-
-The hosted agent starts an **OpenAI Responses-compatible** API server. Locally it runs on port 8088; when deployed to Microsoft Foundry, the platform manages the endpoint, scaling, identity, and conversation state. See [Two Deployment Options](#two-deployment-options) for a comparison with Option A.
-
-#### Local Testing
-
-```bash
-python main.py
-# → Architecture Review Agent Server running on http://localhost:8088
-```
-
-For the `azd`-based local hosted-agent workflow (`azd ai agent run` + `azd ai agent invoke --local`), see [docs/azd-local.md](docs/azd-local.md).
-
-Test with a curl / PowerShell request:
-
-```powershell
-Invoke-RestMethod -Uri "http://localhost:8088/responses" `
-  -Method POST -ContentType "application/json" `
-  -Body '{"input":{"messages":[{"role":"user","content":"Review: LB -> API -> DB"}]}}'
-```
-
-#### Docker
-
-```bash
-docker build -t arch-review .
-docker run -p 8088:8088 --env-file .env arch-review
-```
-
-#### Deploy to Microsoft Foundry (VS Code Extension)
-
-The **VS Code Foundry extension** provides the most stable and straightforward deployment workflow:
-
-1. Install the [Microsoft Foundry for VS Code extension](https://marketplace.visualstudio.com/items?itemName=TeamsDevApp.vscode-ai-foundry)
-2. Open the Command Palette (`Ctrl+Shift+P`) and run **`Microsoft Foundry: Deploy Hosted Agent`**
-3. Select your Foundry workspace and follow the prompts
-4. The extension handles ACR build, container deployment, and managed identity assignment automatically
-
-See [docs/deployment.md](docs/deployment.md) for the complete step-by-step guide with screenshots and RBAC configuration.
-
-#### What Microsoft Foundry Provides
-
-Once deployed as a hosted agent, the platform manages:
-
-| Capability | Details |
-|---|---|
-| **Container hosting** | Built via ACR Tasks, deployed to Foundry-managed compute |
-| **Auto-scaling** | 0 → 5 replicas with scale-to-zero support |
-| **Managed identity** | System-assigned identity with RBAC - no API keys in the container |
-| **Conversation persistence** | The Foundry Agent Service stores and manages conversation state |
-| **Channel publishing** | Publish to **Microsoft Teams**, **M365 Copilot**, **Web App preview**, or a **stable API endpoint** |
-| **Observability** | Built-in OpenTelemetry tracing integrated with Azure Monitor |
-| **API compliance** | Automatic OpenAI Responses API endpoint |
-
-#### Testing the Deployed Agent
-
-**Foundry Playground (VS Code):** Open the Foundry extension → **Hosted Agents (Preview)** → **Architecture Review Agent** → **Playground** tab.
-
-**REST API:**
-```powershell
-$endpoint = "https://<your-resource>.services.ai.azure.com/api/projects/<your-project>"
-$token = (az account get-access-token --resource "https://cognitiveservices.azure.com" --query accessToken -o tsv)
-
-Invoke-RestMethod `
-  -Uri "$endpoint/openai/responses?api-version=2025-05-15-preview" `
-  -Method POST `
-  -Headers @{ "Authorization" = "Bearer $token"; "Content-Type" = "application/json" } `
-  -Body (@{ input = @{ messages = @(@{ role = "user"; content = "Review: LB -> API -> Cache -> DB" }) } } | ConvertTo-Json -Depth 5)
-```
-
-> [!IMPORTANT]
-> For the full deployment guide including RBAC setup, VS Code Foundry Extension workflow, and troubleshooting, see [docs/deployment.md](docs/deployment.md).
-
-For official Microsoft documentation, see [Hosted Agents documentation](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/concepts/hosted-agents?view=foundry&tabs=cli).
+For the web app workflow, use the OS-specific scripts in [scripts/README.md](scripts/README.md). For the hosted-agent workflow, use [docs/azd-local.md](docs/azd-local.md) for local `azd` runs and [docs/deployment.md](docs/deployment.md) for Foundry deployment.
 
 ### Model Deployment (Azure OpenAI)
 
@@ -546,24 +352,24 @@ flowchart LR
 ```yaml
 name: My Architecture
 components:
-  - name: API Gateway
-    type: gateway
-    technology: Kong
-    replicas: 2
-  - name: User Service
-    type: service
-    replicas: 3
-  - name: User Database
-    type: database
-    technology: PostgreSQL
+    - name: API Gateway
+        type: gateway
+        technology: Kong
+        replicas: 2
+    - name: User Service
+        type: service
+        replicas: 3
+    - name: User Database
+        type: database
+        technology: PostgreSQL
 
 connections:
-  - from: api_gateway
-    to: user_service
-    protocol: REST
-  - from: user_service
-    to: user_database
-    protocol: TCP
+    - from: api_gateway
+        to: user_service
+        protocol: REST
+    - from: user_service
+        to: user_database
+        protocol: TCP
 ```
 
 Accepted keys: `components`/`services`/`nodes` and `connections`/`edges`/`flows`/`links`.
