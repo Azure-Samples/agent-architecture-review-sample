@@ -48,8 +48,28 @@ def _infer_type(text: str) -> str:
 
 
 def _extract_replicas(text: str) -> int:
+    # e.g. "3 replica", "5 instances", "2 nodes"
     m = re.search(r"(\d+)\s*(?:replica|instance|node|pod)", text, re.IGNORECASE)
-    return int(m.group(1)) if m else 1
+    if m:
+        return int(m.group(1))
+    # Leading count in name, e.g. "3 API servers" or "2 backends"
+    m2 = re.match(r"^(\d+)\s+\w", text.strip())
+    if m2:
+        return int(m2.group(1))
+    return 1
+
+
+def _strip_leading_count(text: str) -> str:
+    """Remove a leading numeric count from a component name.
+
+    ``"3 API servers"`` → ``"API servers"``  (replicas extracted separately).
+    Only strips when the remainder is ≥2 words to avoid stripping names like
+    ``"5th generation service"``.
+    """
+    m = re.match(r"^(\d+)\s+(.+)", text.strip())
+    if m and len(m.group(2).split()) >= 1:
+        return m.group(2)
+    return text
 
 
 def _sanitize_component_name(raw: str) -> str:
@@ -187,12 +207,23 @@ def _parse_flattened_yaml_payload(content: str) -> dict[str, Any] | None:
     }
 
 
+_ARCH_YAML_KEYS = frozenset(
+    "components services nodes connections edges flows links"
+    " name type technology replicas description from to source target".split()
+)
+
+
 def _detect_format(content: str) -> str:
     stripped = content.strip()
-    if stripped.startswith("---") or re.search(r"^\w[\w\s]*:", stripped, re.MULTILINE):
+    # YAML: must start with a document marker OR have a key that looks like a
+    # known architecture keyword (not just any English sentence ending in ':')
+    if stripped.startswith("---") or re.search(
+        r"^(?:" + "|".join(_ARCH_YAML_KEYS) + r")\s*:",
+        stripped, re.MULTILINE | re.IGNORECASE,
+    ):
         try:
             data = yaml.safe_load(stripped)
-            if isinstance(data, dict):
+            if isinstance(data, dict) and _ARCH_YAML_KEYS & set(data.keys()):
                 return "yaml"
         except yaml.YAMLError:
             pass
@@ -382,16 +413,21 @@ def _parse_text(content: str) -> dict[str, Any]:
             parts = [_sanitize_component_name(p) for p in arrow]
             for idx in range(len(parts) - 1):
                 src, tgt = parts[idx], parts[idx + 1]
+                # Extract replica count from leading number, e.g. "3 API servers"
+                src_replicas = _extract_replicas(src)
+                tgt_replicas = _extract_replicas(tgt)
+                src = _strip_leading_count(src)
+                tgt = _strip_leading_count(tgt)
                 sid = re.sub(r"[^a-z0-9]", "_", src.lower()).strip("_")
                 tid = re.sub(r"[^a-z0-9]", "_", tgt.lower()).strip("_")
                 if not sid or not tid:
                     continue
                 connections.append({"source": sid, "target": tid, "label": "", "type": "sync"})
-                for cid, cname in [(sid, src), (tid, tgt)]:
+                for cid, cname, creplicas in [(sid, src, src_replicas), (tid, tgt, tgt_replicas)]:
                     if cid not in seen:
                         seen.add(cid)
                         components.append({"id": cid, "name": cname, "type": _infer_type(cname),
-                                           "description": "", "replicas": 1, "technology": ""})
+                                           "description": "", "replicas": creplicas, "technology": ""})
             continue
         m = re.match(r"^\s*[-*]\s+(.+)", line)
         text = m.group(1).strip() if m else line
@@ -407,6 +443,36 @@ def _parse_text(content: str) -> dict[str, Any]:
     return {"components": components, "connections": connections, "metadata": {}}
 
 
+_PROSE_PREFIX_RE = re.compile(
+    # Match a conversational phrase ending with ": ".
+    # Requires at least one interior space (multi-word phrase) to avoid matching
+    # single-word YAML keys like "name:", "components:", or "connections:".
+    r"^[A-Za-z][^:\n]*\s[^:\n]{1,60}:\s+",
+    re.DOTALL,
+)
+
+
+def _strip_leading_prose(content: str) -> str:
+    """Remove a short conversational prefix before structured content.
+
+    Handles inputs like:
+    - ``"Review my architecture: Load Balancer -> ..."``
+    - ``"Analyse this design and highlight risks: ## Components ..."``
+
+    Only strips when the prefix is clearly multi-word (not a bare YAML key)
+    and the remainder looks like structured content (heading, arrow, or YAML key).
+    """
+    m = _PROSE_PREFIX_RE.match(content.strip())
+    if not m:
+        return content
+    remainder = content.strip()[m.end():].lstrip()
+    # Only strip if remainder begins with something structural
+    if re.match(r"(?:#{1,3}\s|---\s*\n|[\w][\w\s]*:\s*(?:\S|-)|.+\s*(?:->|→|>>))", remainder):
+        logger.debug("[PARSER] Stripped leading prose prefix: %r", m.group(0))
+        return remainder
+    return content
+
+
 def parse_architecture(content: str, format_hint: str = "auto") -> dict[str, Any]:
     """Parse architecture description (YAML / Markdown / plaintext) into
     ``{"components": [...], "connections": [...], "detected_format": str}``.
@@ -416,6 +482,9 @@ def parse_architecture(content: str, format_hint: str = "auto") -> dict[str, Any
     content is returned with a flag so the caller can decide to invoke the
     LLM-based inference.
     """
+    # Strip a short conversational prefix found in direct agent invocations.
+    content = _strip_leading_prose(content)
+
     # Special handling for one-line YAML payloads from `Get-Content ... -join " "`.
     flat_yaml = _parse_flattened_yaml_payload(content)
     if flat_yaml is not None:

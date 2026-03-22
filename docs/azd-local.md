@@ -184,28 +184,28 @@ What this does in this repo:
 
 ### 4.2 Invoke from a second terminal
 
-Open terminal #2.  The agent understands **any input format** — YAML, Markdown, plain prose, or arrows notation.
+Open terminal #2.  The agent understands **any input format** and handles all preprocessing internally:
 
-#### Option A — Pass a scenario file inline (PowerShell)
+- **Pass a file path** — the agent reads the file automatically (YAML, Markdown, plain text).
+- **Pass inline text** — arrow notation, prose, or any description works as-is.
+- **Prefixes are optional** — `"Review my architecture: "` is stripped automatically; you can omit it entirely.
 
-> **Note:** `azd ai agent invoke --local` treats the argument as a single string — newlines terminate the argument. Collapse multi-line files to a single space-joined string:
+#### Option A — YAML scenario file (pass the path directly)
 
 ```powershell
-$yaml = (Get-Content scenarios/ecommerce.yaml) -join " "
-azd ai agent invoke --local "Review this architecture: $yaml"
+azd ai agent invoke --local "scenarios/ecommerce.yaml"
 ```
 
 #### Option B — Inline plain-text description
 
 ```powershell
-azd ai agent invoke --local "Review my architecture: Load Balancer -> 3 API servers -> PostgreSQL primary with 1 read replica -> Redis cache. Auth handled by the API servers directly."
+azd ai agent invoke --local "LB -> 3 API servers -> PostgreSQL primary with read replica -> Redis cache"
 ```
 
-#### Option C — Markdown scenario file
+#### Option C — Markdown scenario file (pass the path directly)
 
 ```powershell
-$md = (Get-Content scenarios/event_driven.md) -join " "
-azd ai agent invoke --local "Analyse this event-driven design and highlight SPOF and scalability risks: $md"
+azd ai agent invoke --local "scenarios/event_driven.md"
 ```
 
 Expected result for any of the above:
@@ -270,8 +270,9 @@ azd up
   - `python run_local.py README.md --infer` (force LLM inference)
 - **Hosted-agent-local (AZD runtime, full agent loop):**
   - `azd ai agent run`  ← terminal 1
-  - `azd ai agent invoke --local "Review this architecture: $((Get-Content scenarios/ecommerce.yaml) -join ' ')"` ← terminal 2
-  - `azd ai agent invoke --local "LB -> API -> DB with no auth service — what are the security risks?"`
+  - `azd ai agent invoke --local "scenarios/ecommerce.yaml"` ← terminal 2
+  - `azd ai agent invoke --local "scenarios/event_driven.md"`
+  - `azd ai agent invoke --local "LB -> 3 API servers -> PostgreSQL -> Redis"`
   - Each run writes unique `output/architecture_<run_id>.excalidraw` and `.png` files
 
 ## 8) References
