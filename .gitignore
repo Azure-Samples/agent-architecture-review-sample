@@ -9,8 +9,6 @@ build/
 # Virtual environments
 .venv*/
 venv/
-.github
-
 # Environment files (secrets)
 .env
 .env.local

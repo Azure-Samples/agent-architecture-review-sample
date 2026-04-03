@@ -1,0 +1,9 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: Documentation
+    url: https://github.com/Azure-Samples/agent-architecture-review-sample/blob/main/docs/deployment.md
+    about: Read the deployment and setup guide before opening an issue.
+  - name: Contributing Guide
+    url: https://github.com/Azure-Samples/agent-architecture-review-sample/blob/main/CONTRIBUTING.md
+    about: Want to contribute? Start here.
