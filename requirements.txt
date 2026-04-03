@@ -1,5 +1,5 @@
 # Microsoft Agent Framework (Hosted Agents v2)
-azure-ai-agentserver-agentframework==1.0.0b12
+azure-ai-agentserver-agentframework>=1.0.0b17
 azure-identity>=1.25.0,<2.0.0
 
 # MCP (Excalidraw diagram rendering)

@@ -18,7 +18,7 @@ from typing import Any
 
 import yaml
 
-from agent_framework import ChatMessage
+from agent_framework import Message
 from agent_framework.azure import AzureOpenAIChatClient
 
 logger = logging.getLogger("arch-review")
@@ -626,8 +626,8 @@ async def infer_architecture_llm(content: str) -> dict[str, Any]:
 
         response = await client.get_response(
             messages=[
-                ChatMessage(role="system", text=_LLM_INFERENCE_PROMPT),
-                ChatMessage(role="user", text=content[:12000]),
+                Message(role="system", text=_LLM_INFERENCE_PROMPT),
+                Message(role="user", text=content[:12000]),
             ],
             temperature=0.1,
         )

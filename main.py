@@ -192,7 +192,7 @@ async def main():
             credential=credential,
         ) as client,
     ):
-        agent = client.create_agent(
+        agent = client.as_agent(
             name="Architecture Review Agent",
             instructions=INSTRUCTIONS,
             tools=[review_architecture, infer_architecture],
