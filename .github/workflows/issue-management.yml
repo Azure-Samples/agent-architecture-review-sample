@@ -1,0 +1,34 @@
+name: Issue Management
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write
+
+jobs:
+  welcome-and-assign:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Assign issue to maintainer
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              assignees: ['ShivamGoyal03'],
+            });
+
+      - name: Post welcome comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `👋 Thanks for raising this issue! We appreciate you taking the time - please bear with us while we look into it.\n\n**@ShivamGoyal03** will review and respond to you as soon as possible.\n\nIn the meantime, if you have a fix in mind or feel confident about the solution, feel free to raise a PR - contributions are always welcome! Please check the [contributing guide](../blob/main/CONTRIBUTING.md) before opening one.`,
+            });
