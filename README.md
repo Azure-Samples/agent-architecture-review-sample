@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/azure-samples-agent-architecture-review-sample-badge.png)](https://mseep.ai/app/azure-samples-agent-architecture-review-sample)
+
 # Architecture Review Agent Sample
 
 [![TechCommunity Article](https://img.shields.io/badge/TechCommunity-Article-0078D4?logo=microsoft&logoColor=white)](https://techcommunity.microsoft.com/blog/educatordeveloperblog/stop-drawing-architecture-diagrams-manually-meet-the-open-source-ai-architecture/4496271)
